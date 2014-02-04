@@ -47,7 +47,7 @@ WORDS_DICT["move"] = ["go",
 
 WORDS_DICT["up"] = ["up", "above", "ascend"]
 WORDS_DICT["down"] = ["down", "below", "descend"]
-WORDS_DICT["left"] = ["left", "port"]
-WORDS_DICT["right"] = ["right", "starboard"]
-WORDS_DICT["forward"] = ["forward", "forwards", "ahead", "proceed", "continue"]
-WORDS_DICT["backward"] = ["backward", "backwards", "reverse", "back"]
+WORDS_DICT["west"] = ["west"]
+WORDS_DICT["east"] = ["east"]
+WORDS_DICT["north"] = ["north"]
+WORDS_DICT["south"] = ["south"]
