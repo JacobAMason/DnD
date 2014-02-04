@@ -2,12 +2,14 @@ import Dice
 from Entity import Entity
 
 class Mob(Entity):
+    instances = []
     def __init__(self, name, position, wander, speed):
         super().__init__(name, position)
         self._bounds = [range(position[0] - wander, position[0] + wander),
                         range(position[1] - wander, position[1] + wander),
                         range(position[2] - wander, position[2] + wander)]
         self._speed = speed
+        self.instances.append(self)
         
     def get_speed(self):
         """

@@ -1,6 +1,6 @@
 import socket
-import os
 from Player import Player
+from AI import Clock
 
 HOST = "localhost"
 PORT = 34860
@@ -21,6 +21,11 @@ while True:
     
     # This lets one IP address run multiple clients
     ALLOW_MULTIPLE_CONNECTIONS = True
+    
+    # Start game clock
+    
+    GAMECLOCK = Clock()
+    GAMECLOCK.start()
     
     while True:
         print()

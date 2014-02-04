@@ -1,6 +1,11 @@
 import socket
 import os
-os.system("cls")
+
+def clear():
+    os.system('cls'  if  os.name==  'nt'  else  'clear')
+
+clear()
+
 HOST = "localhost"
 PORT = 34860
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -9,7 +14,7 @@ def get_message():
     data, address = s.recvfrom(1024)
     data = data.decode("utf-8")
     
-    os.system("cls")
+    clear()
     print()
     print(data)
     
@@ -21,7 +26,7 @@ get_message()
 while True:
     message = input(">> ")
     while message == "":
-        os.system("cls")
+        clear()
         print("Well.. say something!")
         message = input(">> ")
         
