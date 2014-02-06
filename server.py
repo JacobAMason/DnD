@@ -1,6 +1,6 @@
 import socket
 from Player import Player
-from AI import Clock
+#from AI import Clock
 
 HOST = "localhost"
 PORT = 34860
@@ -24,8 +24,8 @@ while True:
     
     # Start game clock
     
-    GAMECLOCK = Clock()
-    GAMECLOCK.start()
+    #GAMECLOCK = Clock()
+    #GAMECLOCK.start()
     
     while True:
         print()
@@ -58,7 +58,7 @@ while True:
                         print("Sending initialization data.")
                         
                         CONNECTIONS +=1
-                        USERS[address] = Player("Player" + str(CONNECTIONS), [0,0,0])
+                        USERS[address] = Player("Player" + str(CONNECTIONS))
                         
                         s.sendto(bytes("Welcome!", "utf-8"), address)    
             

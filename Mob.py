@@ -1,5 +1,6 @@
 import Dice
 from Entity import Entity
+from Position import Position, Unit
 
 class Mob(Entity):
     instances = []
@@ -9,7 +10,7 @@ class Mob(Entity):
                         range(position[1] - wander, position[1] + wander),
                         range(position[2] - wander, position[2] + wander)]
         self._speed = speed
-        self.instances.append(self)
+        Mob.instances.append(self)
         
     def get_speed(self):
         """
@@ -32,16 +33,20 @@ class Mob(Entity):
         """
         movementSuccess = False
         
-        directions = {1:(0,-1), 2:(0,1), 3:(1,1), 4:(1,-1), 5:(2,1), 6:(2,-1)}
+        directions = {1:Unit["i"], 2:-Unit["i"], 3:Unit["j"], 4:-Unit["j"], 5:Unit["k"], 6:-Unit["k"]}
         
         while not movementSuccess:
-            axis, adjustment = directions[Dice.roll(1,6)]
+            vector = directions[Dice.roll(1,6)]
             
-            if self.get_position(axis) + adjustment in self.get_bounds(axis):
+            if self.set_position(vector):
                 print("Attempting to move", self._name)
-                movementSuccess = self.set_position(axis, adjustment)
+                movementSuccess = True
             else:
                 movementSuccess = False
                 print("Not in wander radius.")
                 
-        print("Moved to", self._position)
+        print("Moved to", self.get_position())
+        
+        
+        
+m1 = Mob("Zombie", Position([0,0,0]), 3, 10)

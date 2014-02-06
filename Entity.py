@@ -1,4 +1,5 @@
 from World import Earth as World
+from Position import Position, Unit
 
 class Entity:
     def __init__(self, name, position):
@@ -8,12 +9,12 @@ class Entity:
         self._defense = 0
         self._position = position
         
-    def get_position(self, axis):
-        return self._position[axis]
+    def get_position(self):
+        return self._position
     
-    def set_position(self, axis, adjustment):
-        if self._position[axis] + adjustment in World.bounds(axis):
-            self._position[axis] += adjustment
+    def set_position(self, vector):
+        if self._position + vector in World:
+            self._position += vector
             return True
         return False
         

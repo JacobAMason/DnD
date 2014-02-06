@@ -1,11 +1,14 @@
 from Entity import Entity
 from Dictionary import WORDS_DICT
+from Position import Position, Unit
 
 class Player(Entity):
-    def __init__(self, name, position):
+    instances = []
+    def __init__(self, name, position = Position([0,0,0])):
         super().__init__(name, position)
         self._health = 100
-        self._defense = 100        
+        self._defense = 100    
+        Player.instances.append(self)
    
     def interpret(self, string):
         string = "".join([char for char in string if char.isalnum() or char.isspace()]).lower().split()
@@ -37,15 +40,13 @@ class Player(Entity):
         """
         Moves character up, down, left, right, forward, and backward.
         """
-        directionDict = {"WEST": (0,-1),
-                         "EAST": (0,1),
-                         "NORTH": (1,1),
-                         "SOUTH": (1,-1),
-                         "UP": (2,1),
-                         "DOWN": (2,-1)}
-        axis = directionDict[direction][0]
-        adjustment = directionDict[direction][1]
-        if self.set_position(axis, adjustment):
-            return ("Moved to: (" + str(self.get_position(0)) + "," + str(self.get_position(1)) + "," + str(self.get_position(2)) + ")")
+        directionDict = {"WEST": -Unit["i"],
+                         "EAST": Unit["i"],
+                         "NORTH": Unit["j"],
+                         "SOUTH": -Unit["j"],
+                         "UP": Unit["k"],
+                         "DOWN": -Unit["k"]}
+        if self.set_position(directionDict[direction]):
+            return ("Moved to: " + str(self.get_position()))
         else:
             return ("You can't go that way.")    
