@@ -1,14 +1,40 @@
 import Dice
 from Entity import Entity
+from Zone import Zone, World
 from Position import Position, Unit
 
 class Mob(Entity):
     instances = []
-    def __init__(self, name, position, wander, speed):
-        super().__init__(name, position)
-        self._bounds = [range(position[0] - wander, position[0] + wander),
-                        range(position[1] - wander, position[1] + wander),
-                        range(position[2] - wander, position[2] + wander)]
+    def __init__(self, name, position, wander, speed, parentZone=World):
+        """
+        This is the standard Mob class for all Mobs that passively move around
+        in the world.
+        
+        Mobs are restricted to the parent zone they were created in as well as
+        their own wander radius. The center of their wander radius will change
+        as their position changes. This is because as a Mob "sees" a Player,
+        they will approach that player, updating their anchor and, consequently,
+        their wander radius.
+        
+        The wander radius is stored as a Zone object. (Not as a subzone, however,
+        because that would prevent the Mob from approaching the world bounderies).
+        
+        Example Mob:
+        
+        name = "Zombie"
+        position = Position([0,0,0])
+        wander = 3
+        speed = 10
+        """
+        super().__init__(name, position, parentZone)
+        self._position = position
+        self._zone = Zone(name="Zombie Wander Radius",
+                          start=Position([self._position[0] - wander,
+                                          self._position[1] - wander,
+                                          self._position[2] - wander]),
+                          end=Position([self._position[0] + wander,
+                                        self._position[1] + wander,
+                                        self._position[2] + wander]))
         self._speed = speed
         Mob.instances.append(self)
         
@@ -17,9 +43,6 @@ class Mob(Entity):
         Speed is needed by the AI to know how often to move a Mob.
         """
         return self._speed
-        
-    def get_bounds(self, axis):
-        return self._bounds[axis]
         
     def move(self):
         """
@@ -33,19 +56,16 @@ class Mob(Entity):
         """
         movementSuccess = False
         
-        directions = {1:Unit["i"], 2:-Unit["i"], 3:Unit["j"], 4:-Unit["j"], 5:Unit["k"], 6:-Unit["k"]}
+        directions = {1:Unit["i"], 2:-Unit["i"], 3:Unit["j"],
+                      4:-Unit["j"], 5:Unit["k"], 6:-Unit["k"]}
         
         while not movementSuccess:
             vector = directions[Dice.roll(1,6)]
             
-            if self.set_position(vector):
-                print("Attempting to move", self._name)
+            if self.set_position(vector, mobbounds=self._zone):
                 movementSuccess = True
-            else:
-                movementSuccess = False
-                print("Not in wander radius.")
                 
-        print("Moved to", self.get_position())
+        print("Moved", self, "to", self.get_position())
         
         
         

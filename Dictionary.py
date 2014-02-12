@@ -51,3 +51,5 @@ WORDS_DICT["west"] = ["west"]
 WORDS_DICT["east"] = ["east"]
 WORDS_DICT["north"] = ["north"]
 WORDS_DICT["south"] = ["south"]
+
+WORDS_DICT["whereami"] = ["where am i", "whereami"]

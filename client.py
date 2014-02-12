@@ -2,9 +2,10 @@ import socket
 import os
 from threading import Thread
 
+os.system("title Client")
 
 def clear():
-    os.system('cls'  if  os.name==  'nt'  else  'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 clear()
 
@@ -18,8 +19,9 @@ class Message(Thread):
         
     def run(self):
         while True:
-            data, address = s.recvfrom(1024)
-            if not data:
+            try:
+                data, address = s.recvfrom(1024)
+            except:
                 continue
             data = data.decode("utf-8")
             
@@ -27,8 +29,7 @@ class Message(Thread):
             print()
     
 # Send a connect message
-
-s.sendto(bytes("CONNECT", "utf-8"), (HOST,PORT))
+#s.sendto(bytes("CONNECT", "utf-8"), (HOST,PORT))
 
 messenger = Message()
 messenger.start()
