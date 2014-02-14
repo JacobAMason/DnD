@@ -1,6 +1,6 @@
 import pickle
 from Entity import Entity
-from Dictionary import WORDS_DICT
+import Dictionary
 from Position import Position, Unit
 from Zone import World
 
@@ -12,6 +12,7 @@ class Player(Entity):
         self._defense = 100
         self._password = password
         Player.instances.append(self)
+        self._interpreterMode = "DEFAULT"
         
     def save(self):
         try:
@@ -31,39 +32,7 @@ class Player(Entity):
         has requested.
         Interprets then executes.
         """
-        wordlist = "".join([char for char in string if char.isalnum() or char.isspace()]).lower().split()
-        keywords = []
-        for word in wordlist:
-            keywords.extend([k for k,v in WORDS_DICT.items() if word in v])
-            
-        def contains(container, keywords):
-            return any([word in WORDS_DICT[container] for word in keywords])
-            
-        if contains("move", keywords):
-            if contains("up", keywords):
-                return self.move("UP")
-            if contains("down", keywords):
-                return self.move("DOWN")
-            if contains("west", keywords):
-                return self.move("WEST")
-            if contains("east", keywords):
-                return self.move("EAST")
-            if contains("south", keywords):
-                return self.move("SOUTH")
-            if contains("north", keywords):
-                return self.move("NORTH")
-            return ("Where do you want to move?")
-        
-        if contains("whereami", keywords):
-            return ("You are at coordinate position " + str(self.get_position()))
-        
-        if string == "save":
-            if self.save():
-                return ("Saved successfully.")
-            else:
-                return ("Couldn't save.")
-        
-        return ("I don't understand what you mean by " + string)
+        return Dictionary.interpret(self, string, self._interpreterMode)
     
     def move(self, direction):
         """
@@ -78,7 +47,4 @@ class Player(Entity):
         if self.set_position(directionDict[direction]):
             return ("Moved " + str(self) + " to: " + str(self.get_position()))
         else:
-            return ("You can't go that way.")
-        
-        
-        
+            return ("You can't go that way.")       

@@ -29,7 +29,7 @@ class Message(Thread):
             print()
     
 # Send a connect message
-#s.sendto(bytes("CONNECT", "utf-8"), (HOST,PORT))
+s.sendto(bytes("CONNECT", "utf-8"), (HOST,PORT))
 
 messenger = Message()
 messenger.start()

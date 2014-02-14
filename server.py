@@ -61,12 +61,12 @@ while True:
         RESPONSE = ""
         
         if data == "DISCONNECT":
-                    if address in USERS:
-                        print("User", USERS[address], "disconnecting at:", address)
-                        del USERS[address]
-                    elif address in ADMINS:
-                        print("Admin", ADMINS[address], "disconnecting at:", address)
-                        del ADMINS[address]        
+            if address in USERS:
+                print("User", USERS[address], "disconnecting at:", address)
+                del USERS[address]
+            elif address in ADMINS:
+                print("Admin", ADMINS[address], "disconnecting at:", address)
+                del ADMINS[address]
         
         elif address in USERS:
             RESPONSE = USERS[address].interpret(data)

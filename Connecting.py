@@ -9,11 +9,7 @@ class Connecting:
     def __init__(self, address):
         self._status = "UNKNOWN"
         self._step = 0
-        self._address = address
-        try:
-            self._users = pickle.load(open("users.p", "rb"))
-        except:
-            self._users = {}        
+        self._address = address       
     
     def get_status(self):
         return self._status
@@ -51,6 +47,12 @@ class Connecting:
             if self._password == message:
                 self.set_status("CONNECTED")
                 self._player = Player(self._name, password=self._password)
+                
+                try:
+                    self._users = pickle.load(open("users.p", "rb"))
+                except:
+                    self._users = {} 
+                    
                 self._users[str(self._player)] = self._player
                 
                 pickle.dump(self._users, open("users.p", "wb"))
@@ -78,14 +80,19 @@ class Connecting:
         elif self._step == 1:
             if self._users[self._name].check_password(message):
                 self.set_status("CONNECTED")
+                
+                try:
+                    self._users = pickle.load(open("users.p", "rb"))
+                except:
+                    self._users = {}                 
+
                 self._player = self._users[self._name]
                 return ("Welcome back, " + str(self._player) + "!")
             else:
                 self.set_status("UNKNOWN")
                 self._step = 0
                 return ("Sorry. That password is incorrect." +
-                        "\n\nType 'load' or 'new' to proceed.")
-                
+                        "\n\nType 'load' or 'new' to proceed.")    
             
     def generate(self):
         return self._player
