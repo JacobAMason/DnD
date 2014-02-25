@@ -1,10 +1,13 @@
-import logging, socketserver, os, pickle, socket, threading, select, time
+import logging, socketserver, os, pickle, socket, threading, select, time, BinaryEncodings
 from Player import Player
 from Connecting import Connecting
 from AI import Clock
 
 os.system("title Server")
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
+# logging system
 logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s %(name)-9s %(levelname)-7s %(message)s",
                     datefmt="%I:%M:%S %p",
@@ -13,10 +16,12 @@ logging.basicConfig(level=logging.DEBUG,
                     )
 
 console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
+console.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s %(name)-9s %(levelname)-8s %(message)s", datefmt="%H:%M:%S")
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
+
+# logging objects for imported modules
 
 
 class RequestHandler(socketserver.BaseRequestHandler):
@@ -164,6 +169,9 @@ class Server(socketserver.ThreadingTCPServer):
         self.ip, self.port = self.server_address
         self.logger.info('Started server on %s:%s', self.ip, self.port)
         socketserver.ThreadingTCPServer.server_activate(self)
+        # Start game clock
+        self.GAMECLOCK = Clock()
+        self.GAMECLOCK.start()
         return
 
     def serve_forever(self, poll_interval=0.5):
@@ -179,7 +187,7 @@ class Server(socketserver.ThreadingTCPServer):
             while not self.__shutdown_request:
                 r, w, e = select.select([self], [], [], poll_interval)
                 if self in r:
-                   self._handle_request_noblock()
+                   self.handle_request()
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
@@ -223,6 +231,7 @@ class Server(socketserver.ThreadingTCPServer):
         self.__shutdown_request = True
         self.__is_shut_down.wait()
         self.logger.warn('[!] Server going down!')
+        self.GAMECLOCK.stop()
 
 
 def start_server():
@@ -233,7 +242,7 @@ def start_server():
     t = threading.Thread(target=server.serve_forever)
     t.setDaemon(True) # don't hang on exit
     t.start()
-    return server
+    return server, t
 
 
 # Build the interface so commands can be run from the server window.
@@ -242,7 +251,7 @@ class Injection(threading.Thread):
         threading.Thread.__init__(self)
 
     def launch(self):
-        self.serverObj = start_server()
+        self.serverObj, self.serverThread = start_server()
         
     def shutdown(self, t=0):
         self.serverObj.shutdown(t)

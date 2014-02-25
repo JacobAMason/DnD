@@ -1,4 +1,4 @@
-import Dice
+import Dice, logging
 from Entity import Entity
 from Zone import Zone, World
 from Position import Position, Unit
@@ -27,6 +27,7 @@ class Mob(Entity):
         speed = 10
         """
         super().__init__(name, position, parentZone)
+        self.logger = logging.getLogger("Mob")
         self._position = position
         self._zone = Zone(name="Zombie Wander Radius",
                           start=Position([self._position[0] - wander,
@@ -65,7 +66,7 @@ class Mob(Entity):
             if self.set_position(vector, mobbounds=self._zone):
                 movementSuccess = True
                 
-        print("Moved", self, "to", self.get_position())
+        self.logger.debug("Moved %s to %s.", self, self.get_position())
         
         
         
