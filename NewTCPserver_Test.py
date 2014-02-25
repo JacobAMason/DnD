@@ -1,4 +1,5 @@
-import logging, socketserver, os, pickle, socket, threading, select, time, BinaryEncodings
+import logging, socketserver, os, pickle, socket, threading, select, time
+from BinaryEncodings import BE
 from Player import Player
 from Connecting import Connecting
 from AI import Clock
@@ -21,8 +22,6 @@ formatter = logging.Formatter("%(asctime)s %(name)-9s %(levelname)-8s %(message)
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
-# logging objects for imported modules
-
 
 class RequestHandler(socketserver.BaseRequestHandler):
     # "Users" contains all users playing by using a dictionary system where the
@@ -34,6 +33,9 @@ class RequestHandler(socketserver.BaseRequestHandler):
     # connecting to the server where the key is their address and the value is
     # the Connecting object.
     CONNECTING = {}
+
+    # This makes it possible to send all the clients a broadcast
+    REQUESTS = []
     
     # This lets one IP address run multiple clients if True
     ALLOW_MULTIPLE_CONNECTIONS = True
@@ -42,6 +44,8 @@ class RequestHandler(socketserver.BaseRequestHandler):
         self.logger = logging.getLogger('RHandler')
         self.logger.debug('__init__')
         self.address = client_address
+        self.request = request
+        RequestHandler.REQUESTS.append(self.request)
         socketserver.BaseRequestHandler.__init__(self, request, client_address, server)
         return
 
@@ -55,14 +59,21 @@ class RequestHandler(socketserver.BaseRequestHandler):
         # Respond
         while True:
             try:
-                data = self.request.recv(1024).decode()
+                data = self.request.recv(1024)
             except:
                 return
+
+            # unpack the message
+            dataType, data = BE.unpack(data)
+            dataType = dataType.decode()
+            data = data.decode()
+            
+            self.logger.debug('Server received a %s type message.', dataType)
             self.logger.debug('Server received: "%s"', data)
             # RESPONSE will contain the string to be sent to the address.
             RESPONSE = ""
             
-            if data == "DISCONNECT":
+            if dataType == "DIS":
                 return
             
             elif self.address in RequestHandler.USERS:
@@ -94,7 +105,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
                     self.logger.info('[+] User "%s" has joined at %s', str(RequestHandler.USERS[self.address]), self.address)
                     del RequestHandler.CONNECTING[self.address]
                     
-            elif data == "CONNECT":
+            elif dataType == "CON":
                 if ((any([key[0] == self.address[0] for key in RequestHandler.USERS.keys()]) or
                   any([key[0] == self.address[0] for key in RequestHandler.CONNECTING.keys()])) and
                   not RequestHandler.ALLOW_MULTIPLE_CONNECTIONS):
@@ -139,7 +150,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
                 RESPONSE = ("Modded Client? Want the ban hammer?")
             
             # RESPOND
-            self.request.send(bytes(RESPONSE, "utf-8"))
+            self.request.send(BE.MESSAGE + bytes(RESPONSE, "utf-8"))
 
     def finish(self):
         if self.address in RequestHandler.USERS:
@@ -151,6 +162,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
         elif self.address in RequestHandler.CONNECTING:
             self.logger.info("[-] Client %s disconnected.", self.address)
             del RequestHandler.CONNECTING[self.address]
+        RequestHandler.REQUESTS.remove(self.request)
         return socketserver.BaseRequestHandler.finish(self)
 
 
@@ -245,6 +257,14 @@ def start_server():
     return server, t
 
 
+def broadcast(message):
+    """
+    Sends a message to all connected clients.
+    """
+    for request in RequestHandler.REQUESTS:
+        request.send(BE.MESSAGE + bytes(message, "utf-8"))
+
+
 # Build the interface so commands can be run from the server window.
 class Injection(threading.Thread):
     def __init__(self):
@@ -265,7 +285,9 @@ class Injection(threading.Thread):
         while True:
             try:
                 command = input()
-                if command.lower() in ["launch","start"]:
+                if command.lower() =="":
+                    continue
+                elif command.lower() in ["launch","start"]:
                     self.launch()
                 elif command.lower() == "restart":
                     self.restart()
@@ -275,11 +297,11 @@ class Injection(threading.Thread):
                     except IndexError:
                         self.shutdown()
                 else:
-                    eval(command)
+                    exec(command)
             except KeyboardInterrupt:
                 exit(0)
-            except Exception as errorMSG:
-                print(errorMSG)
+            # except Exception as errorMSG:
+            #     print(errorMSG)
 
 Injector = Injection()
 Injector.setDaemon(False)

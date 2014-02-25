@@ -1,4 +1,5 @@
 import socket, logging, os
+from BinaryEncodings import BE
 from threading import Thread
 
 os.system("title Client")
@@ -39,17 +40,24 @@ class Message(Thread):
     def run(self):
         while True:
             try:
-                data = s.recv(1024).decode()
+                data = s.recv(1024)
+                dataType, data = BE.unpack(data)
+                dataType = dataType.decode()
+                data = data.decode()
+                logger.debug('Received a %s type message.', dataType)
             except:
                 print("You've been disconnected from the server.")
                 return
-            if data != "":
+            if dataType == "MSG":
                 logger.debug('Received: "%s"', data)
                 print(data)
                 print()
+            elif dataType == "MAP":
+                pass
+                # DUMMY_mapModule(data)
     
 # Send a connect message
-s.send(bytes("CONNECT", "utf-8"))
+s.send(BE.CONNECT)
 
 messenger = Message()
 messenger.start()
@@ -63,12 +71,12 @@ while True:
     clear()
     if message.lower() == "/quit":
         logger.debug("Sending DISCONNECT message")
-        s.send(bytes("DISCONNECT", "utf-8"))
+        s.send(BE.DISCONNECT)
         s.close()
         break
     else:
         logger.debug('Sending: "%s"', message)
-        s.send(bytes(message, "utf-8"))
+        s.send(BE.MESSAGE + bytes(message, "utf-8"))
     
 print()
 print("Thanks for playing!")
