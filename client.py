@@ -38,7 +38,7 @@ while True:
     message = input()
     while message == "":
         print("Well.. say something!")
-        message = input(">> ")
+        message = input()
         
     clear()
     if message.lower() == "quit":

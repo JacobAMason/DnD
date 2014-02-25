@@ -30,6 +30,9 @@ def interpret(self, string, mode):
             if contains("north", keywords):
                 return self.move("NORTH")
             return ("Where do you want to move?")
+        
+    if mode == "DIALOGUE":
+        pass
     
     if fixedString == "where am i":
         return ("You are at coordinate position " + str(self.get_position()) +

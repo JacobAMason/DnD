@@ -6,10 +6,9 @@ class Connecting:
     Generates a new player. Every if section checks for the current creation
     step.
     """        
-    def __init__(self, address):
+    def __init__(self):
         self._status = "UNKNOWN"
-        self._step = 0
-        self._address = address       
+        self._step = 0   
     
     def get_status(self):
         return self._status
@@ -19,6 +18,11 @@ class Connecting:
         
     def new(self, message):
         if self._step == 0:
+            try:
+                self._users = pickle.load(open("users.p", "rb"))
+            except:
+                self._users = {}
+
             if not message.isalnum():
                 return ("Try only using alpha-numeric characters.")
             elif message not in self._users:
@@ -65,6 +69,11 @@ class Connecting:
                         "\nWARNING: It will be visible when you type it.")                        
             
     def load(self, message):
+        try:
+            self._users = pickle.load(open("users.p", "rb"))
+        except:
+            self._users = {}  
+            
         if self._step == 0:
             if message in self._users:
                 self._name = message
@@ -80,12 +89,6 @@ class Connecting:
         elif self._step == 1:
             if self._users[self._name].check_password(message):
                 self.set_status("CONNECTED")
-                
-                try:
-                    self._users = pickle.load(open("users.p", "rb"))
-                except:
-                    self._users = {}                 
-
                 self._player = self._users[self._name]
                 return ("Welcome back, " + str(self._player) + "!")
             else:

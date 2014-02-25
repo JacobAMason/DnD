@@ -103,7 +103,7 @@ while True:
                 print("!!! This client is attempting to connect multiple times.")
                 RESPONSE = ("You are already connected.")
             else:
-                CONNECTING[address] = Connecting(address)
+                CONNECTING[address] = Connecting()
                 RESPONSE = ("Welcome to the server!\nType 'load' or 'new' to proceed.")
 
         
