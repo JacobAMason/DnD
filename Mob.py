@@ -3,6 +3,8 @@ from Entity import Entity
 from Zone import Zone, World
 from Position import Position, Unit
 
+logger = logging.getLogger("Mob")
+
 class Mob(Entity):
     instances = []
     def __init__(self, name, position, wander, speed, parentZone=World):
@@ -27,7 +29,6 @@ class Mob(Entity):
         speed = 10
         """
         super().__init__(name, position, parentZone)
-        self.logger = logging.getLogger("Mob")
         self._position = position
         self._zone = Zone(name="Zombie Wander Radius",
                           start=Position([self._position[0] - wander,
@@ -66,7 +67,7 @@ class Mob(Entity):
             if self.set_position(vector, mobbounds=self._zone):
                 movementSuccess = True
                 
-        self.logger.debug("Moved %s to %s.", self, self.get_position())
+        logger.debug("Moved %s to %s.", self, self.get_position())
         
         
         

@@ -1,5 +1,11 @@
+import logging
+from MapGenerator import MapGen
+
+logger = logging.getLogger("Entity")
+
 class Entity:
     def __init__(self, name, position, parentZone):
+        logger.debug("Entity spawned")
         self._name = name
         #self._health = 0
         #self._attackpoints = 0
@@ -7,6 +13,7 @@ class Entity:
         self._position = position
         self._parentZone = parentZone
         self.update_zone()
+        MapGen.track(self)
         
     def __str__(self):
         return self._name

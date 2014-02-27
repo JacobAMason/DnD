@@ -1,4 +1,4 @@
-import logging, socketserver, os, pickle, socket, threading, select, time
+import logging, socketserver, os, pickle, socket, threading, select, time, traceback
 from BinaryEncodings import BE
 from Player import Player
 from Connecting import Connecting
@@ -269,6 +269,7 @@ def broadcast(message):
 class Injection(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
+        self.logger = logging.getLogger("Injector")
 
     def launch(self):
         self.serverObj, self.serverThread = start_server()
@@ -300,8 +301,8 @@ class Injection(threading.Thread):
                     exec(command)
             except KeyboardInterrupt:
                 exit(0)
-            # except Exception as errorMSG:
-            #     print(errorMSG)
+            except Exception:
+                print(traceback.format_exc())
 
 Injector = Injection()
 Injector.setDaemon(False)
