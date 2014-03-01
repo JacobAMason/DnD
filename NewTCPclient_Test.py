@@ -53,7 +53,15 @@ class Message(Thread):
                 print(data)
                 print()
             elif dataType == "MAP":
-                pass
+                """
+                Right now, this only receives the player's current position and
+                nothing else. I'll start to integrate the mob's position, but that
+                will take a bit and this is easier.
+                
+                data will contain a list in the form [0,0,0] of the player's position.
+                """
+                logger.debug('Received: "%s"', data)
+                data = data.split(",")
                 # DUMMY_mapModule(data)
     
 # Send a connect message

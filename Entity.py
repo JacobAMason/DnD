@@ -5,7 +5,6 @@ logger = logging.getLogger("Entity")
 
 class Entity:
     def __init__(self, name, position, parentZone):
-        logger.debug("Entity spawned")
         self._name = name
         #self._health = 0
         #self._attackpoints = 0
@@ -13,10 +12,16 @@ class Entity:
         self._position = position
         self._parentZone = parentZone
         self.update_zone()
-        MapGen.track(self)
         
     def __str__(self):
         return self._name
+
+    def set_request_id(self, request):
+        """
+        This allows the entity to house the request id needed for sending packets and such.
+        It also initializes the map streamer.
+        """
+        self.request = request
         
     def get_position(self):
         return self._position
@@ -28,6 +33,7 @@ class Entity:
             elif self._position + vector in mobbounds:
                 self._position += vector
             self.update_zone()
+            MapGen.update_position(self)
             return True
         return False
     
@@ -51,6 +57,12 @@ class Entity:
     
     def get_ZoneTree_string(self):
         return " - ".join([str(zone) for zone in self._ZoneTree])
+
+    def destruct(self):
+        """
+        Remove instances of this entity from all lists.
+        """
+        pass
         
         
     #def take_damage(self, damage):

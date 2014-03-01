@@ -13,20 +13,21 @@ Stop the clock by calling Clock.stop()
 import time, logging
 from threading import Thread
 from Mob import Mob
+from Player import Player
 
+logger = logging.getLogger("AI")
 
 class Clock(Thread):
     def __init__(self):
         super().__init__()
-        self.logger = logging.getLogger("AI")
 
     def run(self):
-        self.logger.info("[!] AI clock started.")
+        logger.info("[!] AI clock started.")
         self._alive = True
         self._timeIn = int(time.time())
         
         def move_mob(speed):
-            self.logger.debug("Moving mobs of speed %s", speed)
+            logger.debug("Moving mobs of speed %s", speed)
             for mob in Mob.instances:
                 if mob.get_speed() == speed:
                     mob.move()
@@ -45,12 +46,14 @@ class Clock(Thread):
                 
                 if current_time() >= 60:
                     move_mob(60)
+                    for p in Player.instances:
+                        p.save()
                     self._timeIn = int(time.time())
                     
-                self.logger.debug("Timer active: %s", current_time())
+                logger.debug("Timer active: %s", current_time())
                 time.sleep(10)
         finally:
-            self.logger.warn("[!] AI clock stopped.")
+            logger.warn("[!] AI clock stopped.")
             
     def stop(self):
         self._alive = False

@@ -10,6 +10,7 @@ class BinaryEncodings:
         self.DISCONNECT = struct.pack("!3s", bytes("DIS", "utf-8"))
         self.CONNECT    = struct.pack("!3s", bytes("CON", "utf-8"))
         self.MESSAGE    = struct.pack("!3s", bytes("MSG", "utf-8"))
+        self.MAP        = struct.pack("!3s", bytes("MAP", "utf-8"))
 
     def get_type(self, num):
         """
