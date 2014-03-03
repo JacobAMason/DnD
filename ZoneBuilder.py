@@ -168,8 +168,16 @@ def existance(matrix, xaxis, yaxis, zaxis):
                     else:
                         matrix[floor][row][column] = -1
         display(matrix,floor)
+    return matrix
 
 
+def form_walls(matrix, xaxis, yaxis, zaxis):
+    """
+    This section is responsible for creating walls within each room.
+    """
+    clear()
+    print("Now we're going to construct the interior of the rooms.")
+    print("I'm going to present you with a 
 
 
 def ZoneBuilder():
@@ -181,4 +189,7 @@ def ZoneBuilder():
     matrix, xaxis, yaxis, zaxis = dimensions()
 
     # Part 2: Assigning Room Existance.
-    existance(matrix, xaxis, yaxis, zaxis)    
+    matrix = existance(matrix, xaxis, yaxis, zaxis)
+    
+    # Part 3: Creating room walls.
+    matrix = form_walls(matrix, xaxis, yaxis, zaxis)
