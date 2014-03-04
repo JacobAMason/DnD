@@ -171,7 +171,16 @@ def existance(matrix, xaxis, yaxis, zaxis):
     return matrix
 
 
-def form_walls(matrix, xaxis, yaxis, zaxis):
+def enclose_rooms(matrix, xaxis, yaxis, zaxis):
+    """
+    This function preps the matrix for wall generation. 
+    First, it removes the leftover room numbers.
+    Second, it generates walls where a room is adjacent to a void space.
+    """
+    pass
+
+
+def select_walls(matrix, xaxis, yaxis, zaxis):
     """
     This section is responsible for creating walls within each room.
     """
@@ -200,4 +209,8 @@ def ZoneBuilder():
     matrix = existance(matrix, xaxis, yaxis, zaxis)
     
     # Part 3: Creating room walls.
-    matrix = form_walls(matrix, xaxis, yaxis, zaxis)
+    
+    # First, generate walls adjacent to void spaces.
+    matrix = enclose_rooms(matrix, xaxis, yaxis, zaxis)
+    
+    matrix = select_walls(matrix, xaxis, yaxis, zaxis)
