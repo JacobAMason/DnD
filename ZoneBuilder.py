@@ -177,7 +177,29 @@ def enclose_rooms(matrix, xaxis, yaxis, zaxis):
     First, it removes the leftover room numbers.
     Second, it generates walls where a room is adjacent to a void space.
     """
-    pass
+    newMatrix = [[[-1 for x in range(xaxis)] for y in range(yaxis)] for z in range(zaxis)]
+    for floor in range(zaxis):
+        for row in range(yaxis):
+            for column in range(xaxis):
+                if matrix[floor][row][column] != -1:
+                    bitstring = 0b000011
+                    # North
+                    print(floor, row, column)
+                    if row == 0 or matrix[floor][row-1][column] == -1:
+                        bitstring += 0b100000
+                    # East
+                    if column+1 == xaxis or matrix[floor][row][column+1] == -1:
+                        bitstring += 0b010000
+                    # South
+                    if row+1 == yaxis or matrix[floor][row+1][column] == -1:
+                        bitstring += 0b001000
+                    # West
+                    if column == 0 or matrix[floor][row][column-1] == -1:
+                        bitstring += 0b000100
+                    newMatrix[floor][row][column] = bitstring
+    return newMatrix
+
+
 
 
 def select_walls(matrix, xaxis, yaxis, zaxis):
