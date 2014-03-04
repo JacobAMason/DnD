@@ -177,7 +177,15 @@ def form_walls(matrix, xaxis, yaxis, zaxis):
     """
     clear()
     print("Now we're going to construct the interior of the rooms.")
-    print("I'm going to present you with a 
+    print("I'm going to present you with all rooms that have been selected.")
+    print("I want you to indicate where the walls should be placed in each room.")
+    print("Just like room selection, you will indicate, by a list of numbers,")
+    print("where the walls should be placed.")
+    print()
+    print("In locations where a room is adjacent to a void space, a non-optional")
+    print("will automatically be inserted. Later some of these can be removed")
+    print("to create vertical trasversals, but for now, just consider each")
+    print("floor individually.")
 
 
 def ZoneBuilder():
