@@ -25,7 +25,7 @@ def build(xaxis, yaxis, zaxis):
     return matrix
 
 
-def display(zone, floor):
+def display(zone, floor, walls=False):
     print("Floor", floor+1)
     matrix = zone[floor]
     # Print the matrix.
@@ -41,16 +41,68 @@ def display(zone, floor):
                 
     # Create and print lines.
     sBuffer = ""
-    for row in range(len(matrix)):
-        sBuffer += "|"
+    if walls:
+        sBuffer += "_"*(sum(anMaxSizes)) + "_"*2*(len(anMaxSizes)) + "\n"
+
+        # This sections builds the north walls on the top row
         for column in range(len(matrix[row])):
-            if matrix[row][column] == -1:
-                sStringToCat = format(" ", ">" + str(anMaxSizes[column] + 1))
+            if walls:
+                cellBin = bin(matrix[row][column])[2:].zfill(6)
             else:
-                sStringToCat = format(matrix[row][column], ">" + str(anMaxSizes[column] + 1))
-            sBuffer += sStringToCat + " "
-        sBuffer += "|\n"
-    
+                cellBin = "000000"
+
+            sBuffer += " "
+      
+            if cellBin[2] == "1":
+                sStringToCat = format("-", ">" + str(anMaxSizes[column]))
+            else:
+                sStringToCat = format(" ", ">" + str(anMaxSizes[column]))
+
+            sBuffer += sStringToCat
+            sBuffer += " "
+        sBuffer += "\n"
+    for row in range(len(matrix)):
+        for column in range(len(matrix[row])):
+            if walls:
+                cellBin = bin(matrix[row][column])[2:].zfill(6)
+            else:
+                cellBin = "000000"
+
+            if walls and cellBin[3] == "1":
+                sBuffer += "|"
+            else:
+                sBuffer += " "
+
+            if matrix[row][column] == -1:
+                sStringToCat = format(" ", ">" + str(anMaxSizes[column]))
+            else:
+                sStringToCat = format(matrix[row][column], ">" + str(anMaxSizes[column]))
+            
+            sBuffer += sStringToCat
+            
+            if walls and cellBin[1] == "1":
+                sBuffer += "|"
+            else:
+                sBuffer += " "
+        sBuffer += "\n"
+
+        if not walls:
+            continue
+
+        # This sections builds the north and south walls and shouldn't execute when walls isn't True
+        for column in range(len(matrix[row])):
+            if walls:
+                cellBin = bin(matrix[row][column])[2:].zfill(6)
+            else:
+                cellBin = "000000"
+      
+            if cellBin[2] == "1":
+                sStringToCat = format("----", ">" + str(anMaxSizes[column]))
+            else:
+                sStringToCat = format("    ", ">" + str(anMaxSizes[column]))
+
+            sBuffer += sStringToCat
+        sBuffer += "\n"
     print(sBuffer)
     return
 
@@ -114,6 +166,53 @@ def dimensions():
     return build(xaxis, yaxis, zaxis), xaxis, yaxis, zaxis
 
 
+def swap_states(matrix, floor, xaxis, rooms):
+    """
+    This algorithm subracts the selection by the number of rooms per row
+    so that the column can be determined. The number of subtraction loops
+    also tells us the row the room is in.
+    """
+    for room in rooms:
+        try:
+            column = room
+            row = 1
+            while column > xaxis:
+                column -= xaxis
+                row += 1
+
+            row -=1
+            column -=1
+
+            if column == -1:
+                # catches a case when the user enters 0 as a room number.
+                # would originally toggle the last element on the first row.
+                continue
+
+            if "Y" in matrix[floor][row][column]:
+                matrix[floor][row][column] = matrix[floor][row][column].replace("Y", "")
+            else:
+                matrix[floor][row][column] = "Y" + matrix[floor][row][column]
+            # Row and column now contain the coordinates of the room.
+        except IndexError:
+            print()
+            print(room,"isn't one of the room numbers.")
+            print("Press enter keep working.")
+            input()
+    return matrix
+
+
+def remove_Ys(matrix, xaxis, yaxis, zaxis):
+    for floor in range(zaxis):
+        for row in range(yaxis):
+            for column in range(xaxis):
+                    if "Y" in matrix[floor][row][column]:
+                        matrix[floor][row][column] = matrix[floor][row][column].replace("Y", "")
+                    else:
+                        matrix[floor][row][column] = -1
+        display(matrix,floor)
+    return matrix
+
+
 def existance(matrix, xaxis, yaxis, zaxis):
     for floor in range(zaxis):
         while True:
@@ -128,47 +227,10 @@ def existance(matrix, xaxis, yaxis, zaxis):
             if sInput.lower() == "q":
                 break
 
-            for room in set(map(int, sInput.replace(","," ").split())):
-                """
-                This algorithm subracts the selection by the number of rooms per row
-                so that the column can be determined. The number of subtraction loops
-                also tells us the row the room is in.
-                """
-                try:
-                    column = room
-                    row = 1
-                    while column > xaxis:
-                        column -= xaxis
-                        row += 1
+            matrix = swap_states(matrix, floor, xaxis, set(map(int, sInput.replace(","," ").split())))
 
-                    row -=1
-                    column -=1
-
-                    if column == -1:
-                        # catches a case when the user enters 0 as a room number.
-                        # would originally toggle the last element on the first row.
-                        continue
-
-                    if "Y" in matrix[floor][row][column]:
-                        matrix[floor][row][column] = matrix[floor][row][column].replace("Y", "")
-                    else:
-                        matrix[floor][row][column] = "Y" + matrix[floor][row][column]
-                    # Row and column now contain the coordinates of the room.
-                except IndexError:
-                    print()
-                    print(room,"isn't one of the room numbers.")
-                    print("Press enter keep working.")
-                    input()
     clear()
-    for floor in range(zaxis):
-        for row in range(yaxis):
-            for column in range(xaxis):
-                    if "Y" in matrix[floor][row][column]:
-                        matrix[floor][row][column] = matrix[floor][row][column].replace("Y", "")
-                    else:
-                        matrix[floor][row][column] = -1
-        display(matrix,floor)
-    return matrix
+    return remove_Ys(matrix, xaxis, yaxis, zaxis)
 
 
 def enclose_rooms(matrix, xaxis, yaxis, zaxis):
@@ -184,7 +246,6 @@ def enclose_rooms(matrix, xaxis, yaxis, zaxis):
                 if matrix[floor][row][column] != -1:
                     bitstring = 0b000011
                     # North
-                    print(floor, row, column)
                     if row == 0 or matrix[floor][row-1][column] == -1:
                         bitstring += 0b100000
                     # East
@@ -198,8 +259,6 @@ def enclose_rooms(matrix, xaxis, yaxis, zaxis):
                         bitstring += 0b000100
                     newMatrix[floor][row][column] = bitstring
     return newMatrix
-
-
 
 
 def select_walls(matrix, xaxis, yaxis, zaxis):
@@ -236,3 +295,13 @@ def ZoneBuilder():
     matrix = enclose_rooms(matrix, xaxis, yaxis, zaxis)
     
     matrix = select_walls(matrix, xaxis, yaxis, zaxis)
+
+
+if __name__ == '__main__':
+    m1 = build(5, 5, 2)
+    m1 = swap_states(m1, floor=0, xaxis=5, rooms=[1,2,3,4,5,14,16,17,13,18])
+    m1 = swap_states(m1, floor=1, xaxis=5, rooms=[20,21,23,24,25,17,19,13,14,4,8])
+    m1 = remove_Ys(m1, 5, 5, 2)
+    m1 = enclose_rooms(m1, 5, 5, 2)
+    display(m1, 0, 1)
+    display(m1, 1, 1)
