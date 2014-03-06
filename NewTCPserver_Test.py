@@ -1,8 +1,4 @@
 import logging, socketserver, os, pickle, socket, threading, select, time, traceback
-from BinaryEncodings import BE
-from Player import Player
-from Connecting import Connecting
-from AI import Clock
 
 os.system("title Server")
 def clear():
@@ -21,6 +17,12 @@ console.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s %(name)-9s %(levelname)-8s %(message)s", datefmt="%H:%M:%S")
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
+
+
+from BinaryEncodings import BE
+from Player import Player
+from Connecting import Connecting
+from AI import Clock
 
 
 class RequestHandler(socketserver.BaseRequestHandler):
@@ -101,7 +103,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
                     RESPONSE = RequestHandler.CONNECTING[self.address].new(data)
                 
                 if RequestHandler.CONNECTING[self.address].get_status() == "CONNECTED":
-                    RequestHandler.USERS[self.address] = RequestHandler.CONNECTING[self.address].generate()
+                    RequestHandler.USERS[self.address] = RequestHandler.CONNECTING[self.address].generate(self.request)
                     self.logger.info('[+] User "%s" has joined at %s', str(RequestHandler.USERS[self.address]), self.address)
                     del RequestHandler.CONNECTING[self.address]
                     
@@ -155,9 +157,11 @@ class RequestHandler(socketserver.BaseRequestHandler):
     def finish(self):
         if self.address in RequestHandler.USERS:
             self.logger.info("[-] User %s:%s disconnected.", RequestHandler.USERS[self.address], self.address)
+            RequestHandler.USERS[self.address].destruct()
             del RequestHandler.USERS[self.address]
         elif self.address in RequestHandler.ADMINS:
             self.logger.info("[-] Admin %s:%s disconnected.", RequestHandler.ADMINS[self.address], self.address)
+            RequestHandler.USERS[self.address].destruct()
             del RequestHandler.ADMINS[self.address]
         elif self.address in RequestHandler.CONNECTING:
             self.logger.info("[-] Client %s disconnected.", self.address)
@@ -181,6 +185,7 @@ class Server(socketserver.ThreadingTCPServer):
         self.ip, self.port = self.server_address
         self.logger.info('Started server on %s:%s', self.ip, self.port)
         socketserver.ThreadingTCPServer.server_activate(self)
+       
         # Start game clock
         self.GAMECLOCK = Clock()
         self.GAMECLOCK.start()
@@ -203,12 +208,6 @@ class Server(socketserver.ThreadingTCPServer):
         finally:
             self.__shutdown_request = False
             self.__is_shut_down.set()
-
-    # def serve_forever(self):
-    #     self.logger.info('Online and waiting for requests.')
-    #     while True:
-    #         self.handle_request()
-    #     return
 
     def handle_request(self):
         self.logger.debug('Waiting for requests.')
@@ -262,7 +261,7 @@ def broadcast(message):
     Sends a message to all connected clients.
     """
     for request in RequestHandler.REQUESTS:
-        request.send(BE.MESSAGE + bytes(message, "utf-8"))
+        request.send(bytes(message, "utf-8"))
 
 
 # Build the interface so commands can be run from the server window.
@@ -282,7 +281,7 @@ class Injection(threading.Thread):
         self.launch()
     
     def run(self):
-        print("Injector online.")
+        self.logger.info("Injector: Online")
         while True:
             try:
                 command = input()

@@ -90,6 +90,7 @@ class Connecting:
             if self._users[self._name].check_password(message):
                 self.set_status("CONNECTED")
                 self._player = self._users[self._name]
+                self._player.manual_append()
                 return ("Welcome back, " + str(self._player) + "!")
             else:
                 self.set_status("UNKNOWN")
@@ -97,6 +98,7 @@ class Connecting:
                 return ("Sorry. That password is incorrect." +
                         "\n\nType 'load' or 'new' to proceed.")    
             
-    def generate(self):
+    def generate(self, request):
+        self._player.set_request_id(request)
         return self._player
             

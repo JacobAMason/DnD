@@ -6,19 +6,26 @@ MapGenerator is mostly used to determine a Player's visible range, but it can al
 by mobs to determine what is in proximity to them.
 """
 import logging
+from BinaryEncodings import BE
 
-logger = logging.getLogger("MapGen")
+# Future use for when the map should display other people and things.
+# from Player import Player
+# from Mob import Mob
+
+logger = logging.getLogger("Mapper")
 
 class MapGenerator:
     def __init__(self):
-        self._entities = []
+        logger.info("MapGen: Online")
 
-    def track(self, entity):
+    def update_position(self, entity):
         """
-        Pass this method an entity and MapGenerator will track it.
+        Entity calls this when it has changed something about its positional data.
+
+        Currently just returns its own position.
         """
-        self._entities.append(entity)
-        logger.debug('Appended entity "%s"', entity)
+        logger.debug("Sending %s MAP data.", entity)
+        entity.request.send(BE.MAP + bytes(",".join(str(e) for e in entity.get_position()), "utf-8"))
 
     def look(self, radius):
         """

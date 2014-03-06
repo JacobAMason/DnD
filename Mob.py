@@ -68,7 +68,10 @@ class Mob(Entity):
                 movementSuccess = True
                 
         logger.debug("Moved %s to %s.", self, self.get_position())
-        
-        
-        
-m1 = Mob("Zombie", Position([0,0,0]), 3, 10)
+
+    def destruct(self):
+        """
+        Performs cleanup by removing the mob from all instances lists.
+        """
+        Mob.instances.remove(self)
+        super().destruct()

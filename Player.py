@@ -21,7 +21,14 @@ class Player(Entity):
             pickle.dump(users, open("users.p", "wb"))
             return True
         except:
+            print("Failed to save.")
             return False
+
+    def manual_append(self):
+        """
+        When loading, the append to instances is manual.
+        """
+        Player.instances.append(self)
         
     def check_password(self, password):
         return password == self._password
@@ -47,4 +54,11 @@ class Player(Entity):
         if self.set_position(directionDict[direction]):
             return ("Moved " + str(self) + " to: " + str(self.get_position()))
         else:
-            return ("You can't go that way.")       
+            return ("You can't go that way.") 
+
+    def destruct(self):
+        """
+        Performs cleanup by removing the player from all instances lists.
+        """
+        Player.instances.remove(self)
+        super().destruct()
