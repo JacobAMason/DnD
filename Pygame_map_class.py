@@ -1,48 +1,43 @@
 
 import pygame
 from threading import Thread
-from Position import Position
-from Entity import Entity
 
-class PyMap(Thread):
-    def __init__(self, my_list):
+
+class PlayerMap(Thread):
+    def __init__(self, player_position):
         super().__init__()
-        self.my_list = my_list
+        self._player = player_position
+        self._key = 32
+        self._visibility = 5
+        self._size = self._visibility * self._key + 1
+        self._area = self._size, self._size
+        self._ipos = self._player[0]
+        self._jpos = self._player[1]
+        self._kpos = self._player[2]
+
     def run(self):
         pygame.init()
 
-        size = 500, 500
-        self.screen = pygame.display.set_mode(size)
-
-        self.empty = pygame.image.load('dvd.pgm')
-        self.full = pygame.image.load('creeper.pgm')
-        self.ipos = 3
-        self.jpos = 3
-        key = 64
+        screen = pygame.display.set_mode(self._area)
+        self.base = pygame.image.load('15x15map.png')
+        self.full = pygame.image.load('creeper.png')
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
             pygame.time.delay(5)
-            for x in range(0, 7):
-                for y in range(0, 7):
-                    self.screen.blit(self.empty, (x*key, y*key))
-
-            for guy in self.my_list:
-                self.local = guy.get_position()
-                self.location =(self.local[0]*key, self.local[1]*key)
-                self.screen.blit(self.full, self.location)
-
+            screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2)*self._key))
+            screen.blit(self.full, (2*self._key, 2*self._key))
             pygame.display.flip()
 
     def update(self, position):
-        print('hey')
+        self._ipos = position[0]
+        self._jpos = position[1]
 
 if __name__ == '__main__':
-    my_list = [Entity('alex', Position([0,0,0])), Entity('caleb', Position([2,4,0]))]
-
-    myMap = PyMap(my_list)
+    player_position = [1, 3, 0]
+    myMap = PlayerMap(player_position)
     myMap.start()
     while True:
         try:
