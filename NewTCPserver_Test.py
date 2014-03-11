@@ -246,7 +246,7 @@ class Server(socketserver.ThreadingTCPServer):
 
 
 def start_server():
-    address = ('localhost', 65053) # let the kernel give us a port
+    address = ('0.0.0.0', 65053) # let the kernel give us a port
     server = Server(address, RequestHandler)
     ip, port = server.server_address # find out what port we were given
 
