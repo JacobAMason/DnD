@@ -1,4 +1,4 @@
-import socket, logging, os
+import socket, logging, os, GameMap
 from BinaryEncodings import BE
 from threading import Thread
 
@@ -24,7 +24,7 @@ def clear():
 
 clear()
 
-HOST = "localhost"
+HOST = "25.122.108.67"
 PORT = 65053
 
 logger.debug('creating socket')
@@ -61,8 +61,8 @@ class Message(Thread):
                 data will contain a list in the form [0,0,0] of the player's position.
                 """
                 if data == "INIT":
-                    # DUMMY_mapModule.start_map_function()
-                    pass #REMOVE THIS LINE
+                    MyMap = GameMap.PlayerMap([0,0,0])
+                    MyMap.start()
                 logger.debug('Received: "%s"', data)
 
                 # I'm going to change this where it will either send all the data and
