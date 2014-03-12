@@ -51,7 +51,7 @@ class Zone:
 # All the Zones are generated below. The global scope zone "World" is generated
 # first, and then all it's subzones are instantiated.
 
-World = Zone("World", Position([-10,-10,0]), Position([10,10,3]))
+World = Zone("World", Position([0,0,0]), Position([14,14,1]))
 
 def initialize_zones():
     """
@@ -59,7 +59,7 @@ def initialize_zones():
     once zoning is completed. The subzones will remain in existence as long as
     World remains in scope.
     """
-    Hull = Zone("Hull Hall", Position([-10,-10,0]), Position([10,10,3]), World)
-    Zone("2B", Position([0,0,1]), Position([3,10,2]), Hull)
+    #Hull = Zone("Hull Hall", Position([-10,-10,0]), Position([10,10,3]), World)
+    #Zone("2B", Position([0,0,1]), Position([3,10,2]), Hull)
     
 initialize_zones()
