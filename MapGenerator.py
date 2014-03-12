@@ -18,6 +18,12 @@ class MapGenerator:
     def __init__(self):
         logger.info("MapGen: Online")
 
+    def start(self, entity):
+        """
+        Sends the "start" command to the client so the gui will initialize.
+        """
+        entity.request.send(BE.MAP + bytes("INIT", "utf-8"))
+
     def update_position(self, entity):
         """
         Entity calls this when it has changed something about its positional data.

@@ -5,6 +5,8 @@ This Module contains a clock that moves mob groups of a certain speed on their
 respective speed markings.
 Example: a mob with speed 20 will move every 20 seconds.
 
+This module will also save every player account every minute.
+
 This Module uses threading and will not crash if the server crashes.
 Start the clock by calling Clock.start() (This is inside the threading module.)
 Stop the clock by calling Clock.stop()
