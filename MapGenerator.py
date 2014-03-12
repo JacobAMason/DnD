@@ -22,7 +22,9 @@ class MapGenerator:
         """
         Sends the "start" command to the client so the gui will initialize.
         """
+        logger.debug("Sending MAP INIT.", entity)
         entity.request.send(BE.MAP + bytes("INIT", "utf-8"))
+        self.update_position(entity)
 
     def update_position(self, entity):
         """
