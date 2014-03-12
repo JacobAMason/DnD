@@ -22,6 +22,7 @@ class Entity:
         It also initializes the map streamer.
         """
         self.request = request
+        MapGen.start(self)
         
     def get_position(self):
         return self._position

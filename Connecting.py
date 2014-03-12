@@ -1,3 +1,9 @@
+# Connecting.py
+"""
+This module contains a class for users who are connecting to the server. It contains the steps
+and processes needed for creating a new player and loading a saved one.
+The class serves as a gatekeeper that connects a client with his or her Player.
+"""
 import pickle
 from Player import Player
 

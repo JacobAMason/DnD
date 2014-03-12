@@ -60,7 +60,14 @@ class Message(Thread):
                 
                 data will contain a list in the form [0,0,0] of the player's position.
                 """
+                if data == "INIT":
+                    # DUMMY_mapModule.start_map_function()
+                    pass #REMOVE THIS LINE
                 logger.debug('Received: "%s"', data)
+
+                # I'm going to change this where it will either send all the data and
+                # let you parse it, or I'll parse it first, then send it.
+                # Or build a parsing module... Maybe that's a bit too much.
                 data = data.split(",")
                 # DUMMY_mapModule(data)
     
