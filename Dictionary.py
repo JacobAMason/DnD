@@ -30,13 +30,28 @@ def interpret(self, string, mode):
             if contains("north", keywords):
                 return self.move("NORTH")
             return ("Where do you want to move?")
+
+        if fixedString == "n":
+            return self.move("NORTH")
+        if fixedString == "s":
+            return self.move("SOUTH")
+        if fixedString == "e":
+            return self.move("EAST")
+        if fixedString == "w":
+            return self.move("WEST")
+        if fixedString == "u":
+            return self.move("UP")
+        if fixedString == "d":
+            return self.move("DOWN")
+
+        if fixedString == "where am i":
+            return ("You are at coordinate position " + str(self.get_position()) +
+            "\nYou have a zone tree of " + str(self.update_zone()))
         
     if mode == "DIALOGUE":
         pass
     
-    if fixedString == "where am i":
-        return ("You are at coordinate position " + str(self.get_position()) +
-                "\nYou have a zone tree of " + str(self.update_zone()))
+
     
     if fixedString == "save":
         if self.save():

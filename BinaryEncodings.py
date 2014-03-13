@@ -1,32 +1,45 @@
 # BinaryEncodings.py
 # Below are some Binary encodings for various client/server interactions
-import struct
+import re
 
 class BinaryEncodings:
     """
     returns True or False based on whether or not data is one of the binary encodings.
     """
     def __init__(self):
-        self.DISCONNECT = struct.pack("!3s", bytes("DIS", "utf-8"))
-        self.CONNECT    = struct.pack("!3s", bytes("CON", "utf-8"))
-        self.MESSAGE    = struct.pack("!3s", bytes("MSG", "utf-8"))
-        self.MAP        = struct.pack("!3s", bytes("MAP", "utf-8"))
+        self.DISCONNECT = bytes("DIS", "utf-8")
+        self.CONNECT    = bytes("CON", "utf-8")
+        self.MESSAGE    = bytes("MSG", "utf-8")
+        self.MAP        = bytes("MAP", "utf-8")
+        self._encodings = dict(self.__dict__)
 
-    def unpack(self, astr, fmt="!3ss*"):
+    def parse(self, binary):
         """
-        Return struct.unpack(fmt, astr) with the optional single * in fmt replaced with
-        the appropriate number, given the length of astr.
+        Decodes a binary string.
+        Returns a tuple list of data types and the data they contain.
         """
-        # http://stackoverflow.com/a/7867892/190597
-        try:
-            return struct.unpack(fmt, astr)
-        except struct.error:
-            flen = struct.calcsize(fmt.replace('*', ''))
-            alen = len(astr)
-            idx = fmt.find('*')
-            before_char = fmt[idx-1]
-            n = int((alen-flen)/struct.calcsize(before_char)+1)
-            fmt = ''.join((fmt[:idx-1], str(n), before_char, fmt[idx+1:]))
-            return struct.unpack(fmt, astr)
+        string = binary.decode()
+        regexFormatStr = "("
+        for v in self._encodings.values():
+            regexFormatStr += re.escape(v.decode()) + "|"
+        regexFormatStr = regexFormatStr[:-1] + ")"
+        vector = re.split(regexFormatStr, string)
+        vector.pop(0)
+
+        packets = []
+        for i in range(0,len(vector),2):
+            packets.append((vector[i], vector[i+1]))
+
+        return packets
+
+    def unpack(self, data):
+        """
+        Emulates the old action of unpacking.
+        This uses the above parsing tool, but only returns the first tuple.
+        Why?
+        Well.. The client can attempt to hack the server through use of the BinaryEncodings module.
+        This prevents that.
+        """
+        return self.parse(data)[0]
 
 BE = BinaryEncodings()

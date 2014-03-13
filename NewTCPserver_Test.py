@@ -67,8 +67,6 @@ class RequestHandler(socketserver.BaseRequestHandler):
 
             # unpack the message
             dataType, data = BE.unpack(data)
-            dataType = dataType.decode()
-            data = data.decode()
             
             self.logger.debug('Server received a %s type message.', dataType)
             self.logger.debug('Server received: "%s"', data)
