@@ -72,6 +72,11 @@ class Mob(Entity):
                 
         logger.debug("Moved %s to %s.", self, self.get_position())
 
+    # def follow(self, other):
+    #     """
+        
+    #     """
+
     def destruct(self):
         """
         Performs cleanup by removing the mob from all instances lists.

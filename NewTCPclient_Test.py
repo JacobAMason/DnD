@@ -24,7 +24,7 @@ def clear():
 
 clear()
 
-HOST = "25.122.108.67"
+HOST = "localhost"
 PORT = 65053
 
 logger.debug('creating socket')
@@ -71,22 +71,10 @@ class Message(Thread):
                 """
 
                 if data == "INIT":
-<<<<<<< HEAD
+                    logger.debug('Received MAP INIT')
                     MyMap = GameMap.PlayerMap([0,14,0])
                     MyMap.start()
-                else:
-                    data = data.split(",")
-                    MyMap.update(data)
-                logger.debug('Received: "%s"', data)
 
-                # I'm going to change this where it will either send all the data and
-                # let you parse it, or I'll parse it first, then send it.
-                # Or build a parsing module... Maybe that's a bit too much.
-                
-=======
-                    logger.debug('Received MAP INIT')
-                    # DUMMY_mapModule.start_map_function()
-                
                 elif data[0] == "S":
                     """
                     I'm going to change this where it will either send all the data and
@@ -96,6 +84,7 @@ class Message(Thread):
                     This is the representation of this client's player.
                     """
                     data = [int(axis) for axis in data[1:].split(",")]
+                    MyMap.update(data)
                     logger.debug('Received self position: "%s"', data)
                     print("You are now at", data)
 
@@ -122,7 +111,6 @@ class Message(Thread):
                     # DUMMY_mapModule.MobPosition(data)
 
 
->>>>>>> 25cf211d646cfe5df0815f3ddc89c4640a908f31
     
 # Send a connect message
 s.send(BE.CONNECT)
