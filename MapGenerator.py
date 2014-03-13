@@ -1,12 +1,16 @@
 # MapGenerator.py
 """
 MapGenerator keeps all the coordinate positions of all entities in the same location.
-It offers methods for determining the location of other entities in any given entity's radius.
+It offers methods for determining the location of other entities in any given player's radius.
 MapGenerator is mostly used to determine a Player's visible range, but it can also be used
 by mobs to determine what is in proximity to them.
+
+MapGen will send MAP type packets with an additional prefix to distinguish between
+self movement confirmation and the locations of other players and entities.
 """
 import logging
 from BinaryEncodings import BE
+from Mob import Mob
 
 # Future use for when the map should display other people and things.
 # from Player import Player
@@ -18,27 +22,44 @@ class MapGenerator:
     def __init__(self):
         logger.info("MapGen: Online")
 
-    def start(self, entity):
+    def start(self, player, pInstances):
         """
         Sends the "start" command to the client so the gui will initialize.
         """
-        logger.debug("Sending MAP INIT.", entity)
-        entity.request.send(BE.MAP + bytes("INIT", "utf-8"))
-        self.update_position(entity)
+        logger.debug("Sending MAP INIT.")
+        player.request.send(BE.MAP + bytes("INIT", "utf-8"))
+        self.update_position(player, pInstances)
 
-    def update_position(self, entity):
+    def update_position(self, player, pInstances):
         """
-        Entity calls this when it has changed something about its positional data.
+        Sends a packet to an player that contains his current position.
+        Players usually call this upon updating their positions.
+        """
+        logger.debug("Sending %s MAP data.", player)
+        player.request.send(BE.MAP + bytes("S" + str(player.get_position())[1:-1], "utf-8"))  # 1 to -1 removes the "[" characters
+        self.refresh_view(pInstances)
 
-        Currently just returns its own position.
+    def refresh_view(self, pInstances):
         """
-        logger.debug("Sending %s MAP data.", entity)
-        entity.request.send(BE.MAP + bytes(",".join(str(e) for e in entity.get_position()), "utf-8"))
+        Returns map data based on an player's visible radius.
+        When any Player moves or after every 10 seconds, this function will loop over all the Player entities.
+        It will check to see which player/mobs see who and then send map data to the corresponding players.
+        """
+        logger.debug("Refreshing view.")
+        for p in pInstances:
+            for other in pInstances:
+                if p is not other and p.can_see(other):
+                    logger.debug("Sending %s the position of %s", p, other)
+                    p.request.send(BE.MAP + bytes("P" + str(other.get_position())[1:-1], "utf-8"))
+            for other in Mob.instances:
+                if p.can_see(other):
+                    logger.debug("Sending %s the position of %s", p, other)
+                    p.request.send(BE.MAP + bytes("M" + str(other.get_position())[1:-1], "utf-8"))
+                if other.can_see(p):
+                    logger.debug("%s has spotted %s", other, p)
+                    p.request.send(BE.MESSAGE + bytes("You've been spotted by a " + str(other) + ".", "utf-8"))
 
-    def look(self, radius):
-        """
-        Returns map data based on an Entity's visible radius.
-        """
-        pass
+
+
 
 MapGen = MapGenerator()

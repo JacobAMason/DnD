@@ -54,22 +54,61 @@ class Message(Thread):
                 print()
             elif dataType == "MAP":
                 """
-                Right now, this only receives the player's current position and
-                nothing else. I'll start to integrate the mob's position, but that
-                will take a bit and this is easier.
+                MAP type packets are parsed here before being sent off to the gui.
+                Subtypes:
+                 S: this player's position (Self)
+                 P: other players' positions
+                 M: the position of other Mobs
+
+                Currently, there is no way to distinguish one player from another or
+                one mob from another. Only between players, mobs, and the client.
+
+                Whenever the player moves, all the mapping data needed to draw the screen
+                will be sent immediately afterwards, so it should be okay to clear the screen
+                when the Self is updated.
                 
                 data will contain a list in the form [0,0,0] of the player's position.
                 """
-                if data == "INIT":
-                    # DUMMY_mapModule.start_map_function()
-                    pass #REMOVE THIS LINE
-                logger.debug('Received: "%s"', data)
 
-                # I'm going to change this where it will either send all the data and
-                # let you parse it, or I'll parse it first, then send it.
-                # Or build a parsing module... Maybe that's a bit too much.
-                data = data.split(",")
-                # DUMMY_mapModule(data)
+                if data == "INIT":
+                    logger.debug('Received MAP INIT')
+                    # DUMMY_mapModule.start_map_function()
+                
+                elif data[0] == "S":
+                    """
+                    I'm going to change this where it will either send all the data and
+                    let you parse it, or I'll parse it first, then send it.
+                    Or build a parsing module... Maybe that's a bit too much.
+
+                    This is the representation of this client's player.
+                    """
+                    data = [int(axis) for axis in data[1:].split(",")]
+                    logger.debug('Received self position: "%s"', data)
+                    print("You are now at", data)
+
+                    # DUMMY_mapModule.selfPosition(data)
+
+                elif data[0] == "P":
+                    """
+                    This is the representation of another player.
+                    """
+                    data = [int(axis) for axis in data[1:].split(",")]
+                    logger.debug('Received other player position: "%s"', data)
+                    print("You see a player at", data)
+
+                    # DUMMY_mapModule.otherPlayerPosition(data)
+
+                elif data[0] == "M":
+                    """
+                    This is the representation of a Mob.
+                    """
+                    data = [int(axis) for axis in data[1:].split(",")]
+                    logger.debug('Received mob position: "%s"', data)
+                    print("You see a mob at", data)
+
+                    # DUMMY_mapModule.MobPosition(data)
+
+
     
 # Send a connect message
 s.send(BE.CONNECT)

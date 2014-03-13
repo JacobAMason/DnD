@@ -1,6 +1,11 @@
 class Position:
     def __init__(self, coords):
         self._coords = coords
+
+        # Below is an experimental way of accessing coordinate data.
+        self.x = coords[0]
+        self.y = coords[1]
+        self.z = coords[2]
         
     def __getitem__(self, i):
         return self._coords[i]

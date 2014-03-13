@@ -26,6 +26,12 @@ def build(xaxis, yaxis, zaxis):
 
 
 def display(zone, floor, walls=False):
+    """
+    Prints an interpretation of a single floor of a 3d area.
+
+    Optional parameter "walls" will indicate that the cells contain wall data that needs to be
+    interpreted. Otherwise, the cell data is considered to be a generic room number.
+    """
     print("Floor", floor+1)
     matrix = zone[floor]
     # Print the matrix.

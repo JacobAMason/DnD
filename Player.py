@@ -3,6 +3,7 @@ from Entity import Entity
 import Dictionary
 from Position import Position, Unit
 from Zone import World
+from MapGenerator import MapGen
 
 class Player(Entity):
     instances = []
@@ -13,6 +14,17 @@ class Player(Entity):
         self._password = password
         Player.instances.append(self)
         self._interpreterMode = "DEFAULT"
+
+
+    # Utilitarian methods.
+
+    def set_request_id(self, request):
+        """
+        This allows the entity to house the request id needed for sending packets and such.
+        It also initializes the map streamer.
+        """
+        self.request = request
+        MapGen.start(self, Player.instances)
         
     def save(self):
         try:
@@ -32,6 +44,16 @@ class Player(Entity):
         
     def check_password(self, password):
         return password == self._password
+
+    def destruct(self):
+        """
+        Performs cleanup by removing the player from all instances lists.
+        """
+        Player.instances.remove(self)
+        super().destruct()
+
+
+    # In-game operation methods.
         
     def interpret(self, string):
         """
@@ -52,13 +74,7 @@ class Player(Entity):
                          "UP": Unit["k"],
                          "DOWN": -Unit["k"]}
         if self.set_position(directionDict[direction]):
-            return ("Moved " + str(self) + " to: " + str(self.get_position()))
+            MapGen.update_position(self, Player.instances)
+            return None  # Used to return text, but the text was pointless: ("Moved " + str(self) + " to: " + str(self.get_position()))
         else:
             return ("You can't go that way.") 
-
-    def destruct(self):
-        """
-        Performs cleanup by removing the player from all instances lists.
-        """
-        Player.instances.remove(self)
-        super().destruct()
