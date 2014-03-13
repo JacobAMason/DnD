@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG,
                     )
 
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s %(name)-9s %(levelname)-8s %(message)s", datefmt="%H:%M:%S")
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
@@ -152,7 +152,8 @@ class RequestHandler(socketserver.BaseRequestHandler):
                 RESPONSE = ("Modded Client? Want the ban hammer?")
             
             # RESPOND
-            self.request.send(BE.MESSAGE + bytes(RESPONSE, "utf-8"))
+            if RESPONSE is not None:  # If nothing needs to be sent, the response can always just be None and the loop will iterate.
+                self.request.send(BE.MESSAGE + bytes(RESPONSE, "utf-8"))
 
     def finish(self):
         if self.address in RequestHandler.USERS:
@@ -209,25 +210,30 @@ class Server(socketserver.ThreadingTCPServer):
             self.__shutdown_request = False
             self.__is_shut_down.set()
 
-    def handle_request(self):
-        self.logger.debug('Waiting for requests.')
-        return socketserver.ThreadingTCPServer.handle_request(self)
+    """
+    The below functions are not necessary for server function and only serve
+    as placeholders in case I ever need to override any of them.
+    """
+    # def handle_request(self):
+    #     self.logger.debug('Waiting for requests.')
+    #     return socketserver.ThreadingTCPServer.handle_request(self)
 
-    def verify_request(self, request, client_address):
-        self.logger.debug('verify_request(%s, %s)', request, client_address)
-        return socketserver.ThreadingTCPServer.verify_request(self, request, client_address)
+    # def verify_request(self, request, client_address):
+    #     self.logger.debug('verify_request(%s, %s)', request, client_address)
+    #     return socketserver.ThreadingTCPServer.verify_request(self, request, client_address)
 
-    def process_request(self, request, client_address):
-        self.logger.debug('process_request(%s, %s)', request, client_address)
-        return socketserver.ThreadingTCPServer.process_request(self, request, client_address)
+    # def process_request(self, request, client_address):
+    #     self.logger.debug('process_request(%s, %s)', request, client_address)
+    #     return socketserver.ThreadingTCPServer.process_request(self, request, client_address)
 
-    def finish_request(self, request, client_address):
-        self.logger.debug('finish_request(%s, %s)', request, client_address)
-        return socketserver.ThreadingTCPServer.finish_request(self, request, client_address)
+    # def finish_request(self, request, client_address):
+    #     self.logger.debug('finish_request(%s, %s)', request, client_address)
+    #     return socketserver.ThreadingTCPServer.finish_request(self, request, client_address)
 
-    def close_request(self, request):
-        self.logger.debug('close_request(%s)', request)
-        return socketserver.ThreadingTCPServer.close_request(self, request)
+    # def close_request(self, request):
+    #     self.logger.debug('close_request(%s)', request)
+    #     return socketserver.ThreadingTCPServer.close_request(self, request)
+
 
     def shutdown(self, t):
         """Stops the serve_forever loop.

@@ -105,6 +105,10 @@ class Connecting:
                         "\n\nType 'load' or 'new' to proceed.")    
             
     def generate(self, request):
+        """
+        Generate will pass the request id to the Player object.
+        This starts a slew of things including the Map.
+        """
         self._player.set_request_id(request)
         return self._player
             

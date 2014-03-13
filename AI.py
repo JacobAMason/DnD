@@ -16,6 +16,7 @@ import time, logging
 from threading import Thread
 from Mob import Mob
 from Player import Player
+from MapGenerator import MapGen
 
 logger = logging.getLogger("AI")
 
@@ -51,6 +52,8 @@ class Clock(Thread):
                     for p in Player.instances:
                         p.save()
                     self._timeIn = int(time.time())
+
+                MapGen.refresh_view(Player.instances)
                     
                 logger.debug("Timer active: %s", current_time())
                 time.sleep(10)

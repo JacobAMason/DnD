@@ -12,11 +12,6 @@ class BinaryEncodings:
         self.MESSAGE    = struct.pack("!3s", bytes("MSG", "utf-8"))
         self.MAP        = struct.pack("!3s", bytes("MAP", "utf-8"))
 
-    def get_type(self, num):
-        """
-        Evaluates a number and returns it's 
-        """
-
     def unpack(self, astr, fmt="!3ss*"):
         """
         Return struct.unpack(fmt, astr) with the optional single * in fmt replaced with

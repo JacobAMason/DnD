@@ -1,5 +1,4 @@
 import logging
-from MapGenerator import MapGen
 
 logger = logging.getLogger("Entity")
 
@@ -11,32 +10,38 @@ class Entity:
         #self._defense = 0
         self._position = position
         self._parentZone = parentZone
+        self._visibility = 3  # Distance radius of visibility.
         self.update_zone()
         
     def __str__(self):
         return self._name
-
-    def set_request_id(self, request):
-        """
-        This allows the entity to house the request id needed for sending packets and such.
-        It also initializes the map streamer.
-        """
-        self.request = request
-        MapGen.start(self)
         
     def get_position(self):
         return self._position
     
     def set_position(self, vector, mobbounds=None):
+        logger.debug("%s trying to move with vector %s.", self, vector)
         if self._position + vector in self._parentZone:
             if mobbounds is None:
+                logger.debug("%s has no mobbounds and is inside %s.", self, self._parentZone)
                 self._position += vector
             elif self._position + vector in mobbounds:
+                logger.debug("%s is inside mobbounds %s.", self, mobbounds)
                 self._position += vector
             self.update_zone()
-            MapGen.update_position(self)
             return True
         return False
+
+    def can_see(self, other):
+        """
+        This function returns True or False depending on whether this Entity can visibly see another Entity.
+        Currently, things will be able to see through walls. I'll fix that later.
+        The check method takes the difference of the two vectors and returns a magnitude which can be checked against.
+        """
+        logger.debug("%s looking for %s.", self, other)
+        distanceVector = self.get_position() - other.get_position()
+        distance = sum([abs(axis) for axis in distanceVector])
+        return distance <= self._visibility
     
     def update_zone(self):
         """
@@ -77,3 +82,8 @@ class Entity:
     #def deal_damage(self, other):
         #self._attackpoints
         
+if __name__ == '__main__':
+    from Zone import World
+    from Position import Position
+
+    e1 = Entity("Entity 1", Position([0,0,0]), World)
