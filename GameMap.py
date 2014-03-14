@@ -21,12 +21,13 @@ class PlayerMap(Thread):
         screen = pygame.display.set_mode(self._area)
         self.base = pygame.image.load('15x15map.png')
         self.full = pygame.image.load('creeper.png')
+        black = 0, 0, 0
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-            screen.fill(0,0,0)    # Fill the screen with black
+            screen.fill(black)
             screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2)*self._key))
             screen.blit(self.full, (self._visibility//2*self._key, self._visibility//2*self._key))
             pygame.display.update()
