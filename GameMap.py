@@ -34,7 +34,7 @@ class PlayerMap(Thread):
 
     def update(self, position):
         self._ipos = int(position[0])
-        self._jpos = 14 - int(position[1])
+        self._jpos = int(position[1])
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]
