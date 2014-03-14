@@ -7,7 +7,7 @@ logger = logging.getLogger("Mob")
 
 class Mob(Entity):
     instances = []
-    def __init__(self, name, position, speed, wander=None, parentZone=World):
+    def __init__(self, name, visibility=3, position=Position([0,0,0]), speed=10, wander=None, parentZone=World):
         """
         This is the standard Mob class for all Mobs that passively move around
         in the world.
@@ -28,7 +28,7 @@ class Mob(Entity):
         wander = 3
         speed = 10
         """
-        super().__init__(name, position, parentZone)
+        super().__init__(name, visibility, position, parentZone)
         self._position = position
         if wander is not None:
             self._zone = Zone(name="Mob Wander Radius",
@@ -86,4 +86,4 @@ class Mob(Entity):
         self = None
 
 # Temp test Mob
-m1 = Mob(name="Zombie", position=Position([0,0,0]), speed=10, wander=None)
+m1 = Mob(name="Zombie", visibility=3, position=Position([0,0,0]), speed=10, wander=None)

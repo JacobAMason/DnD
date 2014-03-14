@@ -3,14 +3,11 @@ import logging
 logger = logging.getLogger("Entity")
 
 class Entity:
-    def __init__(self, name, position, parentZone):
+    def __init__(self, name, visibility, position, parentZone):
         self._name = name
-        #self._health = 0
-        #self._attackpoints = 0
-        #self._defense = 0
         self._position = position
         self._parentZone = parentZone
-        self._visibility = 3  # Distance radius of visibility.
+        self._visibility = visibility  # Distance radius of visibility.
         self.update_zone()
         
     def __str__(self):
@@ -25,10 +22,11 @@ class Entity:
             if mobbounds is None:
                 logger.debug("%s has no mobbounds and is inside %s.", self, self._parentZone)
                 self._position += vector
+                self.update_zone()
             elif self._position + vector in mobbounds:
                 logger.debug("%s is inside mobbounds %s.", self, mobbounds)
                 self._position += vector
-            self.update_zone()
+                self.update_zone()
             return True
         return False
 
@@ -51,7 +49,7 @@ class Entity:
         The "zone" begins at the player's parent zone and changes to reflect the
         next layer of zone
         """
-        def recursive_subzoning(zone=self._parentZone, tree=[]):
+        def recursive_subzoning(zone=self._parentZone, tree=[self._parentZone]):
             for subzone in zone.get_subzones():
                 if self.get_position() in subzone:
                     tree.append(subzone)
@@ -64,26 +62,17 @@ class Entity:
     def get_ZoneTree_string(self):
         return " - ".join([str(zone) for zone in self._ZoneTree])
 
+    def set_visibility(self, visibility):
+        self._visibility = visibility
+
     def destruct(self):
         """
         Remove instances of this entity from all lists.
         """
         pass
         
-        
-    #def take_damage(self, damage):
-        #damage =- self._armor
-        #if damage > 0:
-            #self._health - damage
-            
-    #def add_health(self, health):
-        #self._health += health
-            
-    #def deal_damage(self, other):
-        #self._attackpoints
-        
 if __name__ == '__main__':
     from Zone import World
     from Position import Position
 
-    e1 = Entity("Entity 1", Position([0,0,0]), World)
+    e1 = Entity("Entity 1", visibility=3, position=Position([0,0,0]), parentZone=World)

@@ -46,7 +46,7 @@ def interpret(self, string, mode):
 
         if fixedString == "where am i":
             return ("You are at coordinate position " + str(self.get_position()) +
-            "\nYou have a zone tree of " + str(self.update_zone()))
+            "\nYou have a zone tree of " + str(self.get_ZoneTree_string()))
         
     if mode == "DIALOGUE":
         pass

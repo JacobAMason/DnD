@@ -4,13 +4,12 @@ import Dictionary
 from Position import Position, Unit
 from Zone import World
 from MapGenerator import MapGen
+import XMLparse
 
 class Player(Entity):
     instances = []
-    def __init__(self, name, position=Position([0,0,0]), parentZone=World, password=None):
-        super().__init__(name, position, parentZone)
-        self._health = 100
-        self._defense = 100
+    def __init__(self, name, visibility=3, position=Position([0,0,0]), parentZone=World, password=None):
+        super().__init__(name, visibility, position, parentZone)
         self._password = password
         Player.instances.append(self)
         self._interpreterMode = "DEFAULT"
@@ -31,6 +30,7 @@ class Player(Entity):
             users = pickle.load(open("users.p", "rb"))
             users[str(self)] = self
             pickle.dump(users, open("users.p", "wb"))
+            XMLparse.save_to_XML(Player.instances, "users.xml")
             return True
         except:
             print("Failed to save.")
@@ -77,4 +77,4 @@ class Player(Entity):
             MapGen.update_position(self, Player.instances)
             return None  # Used to return text, but the text was pointless: ("Moved " + str(self) + " to: " + str(self.get_position()))
         else:
-            return ("You can't go that way.") 
+            return ("You can't go that way.")

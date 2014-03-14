@@ -1,16 +1,16 @@
 from Position import Position
 
 class Zone:
-    def __init__(self, name, start, end, parent=None, description=None):
+    def __init__(self, name, start, end, parentZone=None, description=None):
         self._bounds = [range(start[0],end[0]),range(start[1],end[1]),range(start[2],end[2])]
         self._lower = start
         self._upper = end
         self._name = name
         self._subzones = []
-        self._parent = parent
+        self._parentZone = parentZone
         self._description = description
-        if parent is not None:
-            self.create_subzone(parent)
+        if parentZone is not None:
+            self.create_subzone(parentZone)
             
     def __contains__(self, other):
         """
@@ -40,12 +40,12 @@ class Zone:
     def __str__(self):
         return self._name
     
-    def create_subzone(self, parent):
-        if self in parent:
+    def create_subzone(self, parentZone):
+        if self in parentZone:
             # TODO: check for sister Zones and disallow any overlaps.
-            parent._subzones.append(self)
+            parentZone._subzones.append(self)
             return
-        raise Exception("Tried to build zone '" + str(self) + "' outside parent zone '" + str(parent) + "'.")
+        raise Exception("Tried to build zone '" + str(self) + "' outside parent zone '" + str(parentZone) + "'.")
 
 
 # All the Zones are generated below. The global scope zone "World" is generated
@@ -59,7 +59,6 @@ def initialize_zones():
     once zoning is completed. The subzones will remain in existence as long as
     World remains in scope.
     """
-    #Hull = Zone("Hull Hall", Position([-10,-10,0]), Position([10,10,3]), World)
-    #Zone("2B", Position([0,0,1]), Position([3,10,2]), Hull)
+    z1 = Zone("Test Zone 1", start=Position([0,0,0]), end=Position([5,5,1]), parentZone=World)
     
 initialize_zones()

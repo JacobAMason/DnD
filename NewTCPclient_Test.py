@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG,
                     )
 
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s  %(name)-7s %(levelname)-8s %(message)s", datefmt="%I:%M:%S %p")
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
@@ -91,7 +91,12 @@ class Message(Thread):
                         logger.debug('Received self position: "%s"', data)
                         print("You are now at", data)
 
-                        # DUMMY_mapModule.selfPosition(data)
+                    elif data == "BEGIN":
+                        """
+                        The stream of mob and other player data is about to begin.
+                        """
+                        logger.debug("Starting Map Stream")
+                        # DUMMY function here
 
                     elif data[0] == "P":
                         """
@@ -112,6 +117,13 @@ class Message(Thread):
                         print("You see a mob at", data)
 
                         # DUMMY_mapModule.MobPosition(data)
+
+                    elif data == "END":
+                        """
+                        The stream of mob and other player data is complete.
+                        """
+                        logger.debug("Map Stream Over")
+                        # DUMMY function here
 
     
 # Send a connect message

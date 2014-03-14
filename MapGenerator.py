@@ -47,6 +47,7 @@ class MapGenerator:
         """
         logger.debug("Refreshing view.")
         for p in pInstances:
+            p.request.send(BE.MAP + bytes("BEGIN", "utf-8"))
             for other in pInstances:
                 if p is not other and p.can_see(other):
                     logger.debug("Sending %s the position of %s", p, other)
@@ -58,7 +59,7 @@ class MapGenerator:
                 if other.can_see(p):
                     logger.debug("%s has spotted %s", other, p)
                     p.request.send(BE.MESSAGE + bytes("You've been spotted by a " + str(other) + ".", "utf-8"))
-
+            p.request.send(BE.MAP + bytes("END", "utf-8"))
 
 
 
