@@ -6,21 +6,26 @@ from threading import Thread
 class PlayerMap(Thread):
     def __init__(self, player_position):
         super().__init__()
-        self._player = player_position
+        self._player_position = player_position
         self._key = 32
         self._visibility = 9
         self._size = self._visibility * self._key + 1
         self._area = self._size, self._size
-        self._ipos = self._player[0]
-        self._jpos = self._player[1]
-        self._kpos = self._player[2]
+        self._ipos = self._player_position[0]
+        self._jpos = self._player_position[1]
+        self._kpos = self._player_position[2]
+        self._players = []
+        self._mobs = []
 
     def run(self):
         pygame.init()
 
         screen = pygame.display.set_mode(self._area)
         self.base = pygame.image.load('15x15map.png')
-        self.full = pygame.image.load('creeper.png')
+        self.player = pygame.image.load('playstation.png')
+        self.other = pygame.image.load('droid.png')
+        self.mob = pygame.image.load('creeper.png')
+
         black = 0, 0, 0
 
         while True:
@@ -29,12 +34,27 @@ class PlayerMap(Thread):
                     return
             screen.fill(black)
             screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2)*self._key))
-            screen.blit(self.full, (self._visibility//2*self._key, self._visibility//2*self._key))
+            for person in self._players:
+                screen.blit(self.other,(person))
+            for baddie in self._mobs:
+                screen.blit(self.mob,(baddie))
+            screen.blit(self.player, (self._visibility//2*self._key, self._visibility//2*self._key))
             pygame.display.update()
 
     def update(self, position):
         self._ipos = int(position[0])
         self._jpos = int(position[1])
+
+    def character_init(self):
+        self._players = []
+        self._mobs = []
+
+    def mob_update(self, position):
+        self.temp_i = int(position[0])
+        self.temp_j = int(position[1])
+        self._mob_i = self._visibility//2 + (self.temp_i - self._ipos)
+        self._mob_j = self._visibility//2 + (self.temp_j - self._jpos)
+        self._mobs.append((self._mob_i,self._mob_j))
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]

@@ -96,8 +96,7 @@ class Message(Thread):
                         The stream of mob and other player data is about to begin.
                         """
                         logger.debug("Starting Map Stream")
-                        # DUMMY function here
-
+                        MyMap.character_init():
                     elif data[0] == "P":
                         """
                         This is the representation of another player.
@@ -116,7 +115,7 @@ class Message(Thread):
                         logger.debug('Received mob position: "%s"', data)
                         print("You see a mob at", data)
 
-                        # DUMMY_mapModule.MobPosition(data)
+                        MyMap.mob_update(data)
 
                     elif data == "END":
                         """
