@@ -86,4 +86,4 @@ class Mob(Entity):
         self = None
 
 # Temp test Mob
-m1 = Mob(name="Zombie", position=Position([0,0,0,]), speed=10, wander=None)
+m1 = Mob(name="Zombie", position=Position([0,0,0]), speed=10, wander=None)

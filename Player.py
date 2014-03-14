@@ -69,8 +69,8 @@ class Player(Entity):
         """
         directionDict = {"WEST": -Unit["i"],
                          "EAST": Unit["i"],
-                         "NORTH": Unit["j"],
-                         "SOUTH": -Unit["j"],
+                         "NORTH": -Unit["j"],
+                         "SOUTH": Unit["j"],
                          "UP": Unit["k"],
                          "DOWN": -Unit["k"]}
         if self.set_position(directionDict[direction]):
