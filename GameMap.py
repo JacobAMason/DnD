@@ -8,7 +8,7 @@ class PlayerMap(Thread):
         super().__init__()
         self._player = player_position
         self._key = 32
-        self._visibility = 5
+        self._visibility = 9
         self._size = self._visibility * self._key + 1
         self._area = self._size, self._size
         self._ipos = self._player[0]
@@ -19,15 +19,16 @@ class PlayerMap(Thread):
         pygame.init()
 
         screen = pygame.display.set_mode(self._area)
-        self.base = pygame.image.load('17x17map.png')
+        self.base = pygame.image.load('15x15map.png')
         self.full = pygame.image.load('creeper.png')
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-            screen.blit(self.base, (-((self._ipos-self._visibility//2)+1)*self._key, -((self._jpos-self._visibility//2)+1)*self._key))
-            screen.blit(self.full, (2*self._key, 2*self._key))
+            screen.fill(0,0,0)    # Fill the screen with black
+            screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2)*self._key))
+            screen.blit(self.full, (self._visibility//2*self._key, self._visibility//2*self._key))
             pygame.display.update()
 
     def update(self, position):
