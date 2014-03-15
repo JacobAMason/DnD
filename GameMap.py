@@ -25,7 +25,7 @@ class PlayerMap(Thread):
         self.base = pygame.image.load('15x15map.png')
         self.player = pygame.image.load('playstation.png')
         self.other = pygame.image.load('droid.png')
-        self.mob = pygame.image.load('creeper.png')
+        self.mob = pygame.image.load('creeperm2.png')
         TheFont = pygame.font.SysFont(None, 64)
 
         black = 0, 0, 0
