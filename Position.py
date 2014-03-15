@@ -49,6 +49,13 @@ class Position:
     def __ne__(self, other):
         return not self == other
 
+    def __gt__(self, other):
+        return sum([abs(axis) for axis in self._coords]) > sum([abs(axis) for axis in other._coords])
+ 
+    def __lt__(self, other):
+        return sum([abs(axis) for axis in self._coords]) < sum([abs(axis) for axis in other._coords])
+
+
 
 # Used to adjust a position 
 Unit = {"i": Position([1,0,0]), "j": Position([0,1,0]), "k": Position([0,0,1])} 

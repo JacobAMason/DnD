@@ -41,6 +41,8 @@ class Mob(Entity):
         else:
             self._zone = None  # Setting this to None causes set_position() to not check it at all.
         self._speed = speed
+        self._willFollow = True  # All mobs will follow by default.
+        self._wasFollowing, self._isFollowing = [], []
         Mob.instances.append(self)
         
     def get_speed(self):
@@ -72,10 +74,39 @@ class Mob(Entity):
                 
         logger.debug("Moved %s to %s.", self, self.get_position())
 
-    # def follow(self, other):
-    #     """
-        
-    #     """
+
+    # Player tracking functions
+
+    def follow(self, other):
+        """
+        This function adds the player to a tracking list, choosing only the closest as the
+        primary target.
+        """
+        self._isFollowing.append(other)
+        for i in range(1, len(self._isFollowing)):
+            while i > 0 and (self._isFollowing[i-1].get_position() - self.get_position()) > (self._isFollowing[i].get_position() - self.get_position()):
+                self._isFollowing[i], self._isFollowing[i-1] = self._isFollowing[i-1], self._isFollowing[i]
+                i -=1
+
+
+
+    def can_see(self, other):
+        """
+        This function is a bit weird. It is kinda like a mask for the underlying can_see()
+        function that resides in the parent class Entity. This function basically passes the
+        function call through, but can make changes on this particular subclass level in 
+        the process.
+        It does this so the Mob can effectively "follow" players around.
+        """
+        if super().can_see(other):
+            if self._willFollow:
+                self.follow(other)
+            return True
+        else:
+            if self._willFollow and other in self._wasFollowing:
+                self.stop_follow(other)
+            return False
+
 
     def destruct(self):
         """
