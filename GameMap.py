@@ -49,7 +49,7 @@ class PlayerMap(Thread):
     def character_init(self):
         self._players = []
         self._mobs = []
-        self._new_players - []
+        self._new_players = []
         self._new_mobs = []
 
     def client_update(self, position):
