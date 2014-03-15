@@ -77,8 +77,6 @@ class Mob(Entity):
                     options.append(((self._isFollowing[0].get_position() - d - self.get_position()).magnitude(), d))
 
                 options.sort()
-                for op in options:
-                    print(op[0], op[1])
 
                 for rank, vector in options:
                     if self.set_position(vector, mobbounds=self._zone):
@@ -108,6 +106,13 @@ class Mob(Entity):
                 self._isFollowing[i], self._isFollowing[i-1] = self._isFollowing[i-1], self._isFollowing[i]
                 i -=1
         logger.debug("%s is tracking %s", self, other)
+
+    def unfollow(self):
+        """
+        This function dumps the tracking list, forcing it to rebuild.
+        This has to happen whenever a player disconnects.
+        """
+        self._isFollowing = []
 
     def can_see(self, other):
         """

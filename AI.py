@@ -41,6 +41,11 @@ class Clock(Thread):
         try:
             while self._alive:
                 move_mob(10)
+
+                for mob in Mob.instances:
+                    # Dump the following list after movements, forcing it to rebuild before every check.
+                    mob.unfollow()
+
                 if current_time()%20 == 0:
                     move_mob(20)
                     
