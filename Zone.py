@@ -51,7 +51,7 @@ class Zone:
 # All the Zones are generated below. The global scope zone "World" is generated
 # first, and then all it's subzones are instantiated.
 
-World = Zone("World", Position([0,0,0]), Position([14,14,1]))
+World = Zone("World", Position([0,0,0]), Position([15,15,1]))
 
 def initialize_zones():
     """
