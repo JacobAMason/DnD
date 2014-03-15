@@ -67,10 +67,29 @@ class Mob(Entity):
                       4:-Unit["j"], 5:Unit["k"], 6:-Unit["k"]}
         
         while not movementSuccess:
-            vector = directions[Dice.roll(1,6)]
-            
-            if self.set_position(vector, mobbounds=self._zone):
-                movementSuccess = True
+            if len(self._isFollowing) > 0:
+                """
+                If following someone, order the direction vectors by choosing those which
+                would close the gap between the mob and the player first.
+                """
+                options = []
+                for d in directions.values():
+                    options.append(((self._isFollowing[0].get_position() - d - self.get_position()).magnitude(), d))
+
+                options.sort()
+                for op in options:
+                    print(op[0], op[1])
+
+                for rank, vector in options:
+                    if self.set_position(vector, mobbounds=self._zone):
+                        movementSuccess = True
+                        break
+
+            else:
+                vector = directions[Dice.roll(1,6)]
+                
+                if self.set_position(vector, mobbounds=self._zone):
+                    movementSuccess = True
                 
         logger.debug("Moved %s to %s.", self, self.get_position())
 
@@ -82,7 +101,8 @@ class Mob(Entity):
         This function adds the player to a tracking list, choosing only the closest as the
         primary target.
         """
-        self._isFollowing.append(other)
+        if not other in self._isFollowing:
+            self._isFollowing.append(other)
         for i in range(1, len(self._isFollowing)):
             while i > 0 and (self._isFollowing[i-1].get_position() - self.get_position()) > (self._isFollowing[i].get_position() - self.get_position()):
                 self._isFollowing[i], self._isFollowing[i-1] = self._isFollowing[i-1], self._isFollowing[i]

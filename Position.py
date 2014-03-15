@@ -3,9 +3,9 @@ class Position:
         self._coords = coords
 
         # Below is an experimental way of accessing coordinate data.
-        self.x = coords[0]
-        self.y = coords[1]
-        self.z = coords[2]
+        self.i = coords[0]
+        self.j = coords[1]
+        self.k = coords[2]
         
     def __getitem__(self, i):
         return self._coords[i]
@@ -50,12 +50,13 @@ class Position:
         return not self == other
 
     def __gt__(self, other):
-        return sum([abs(axis) for axis in self._coords]) > sum([abs(axis) for axis in other._coords])
+        return self.magnitude() > other.magnitude()
  
     def __lt__(self, other):
-        return sum([abs(axis) for axis in self._coords]) < sum([abs(axis) for axis in other._coords])
+        return self.magnitude() < other.magnitude()
 
-
+    def magnitude(self):
+        return sum([abs(axis) for axis in self._coords])
 
 # Used to adjust a position 
 Unit = {"i": Position([1,0,0]), "j": Position([0,1,0]), "k": Position([0,0,1])} 

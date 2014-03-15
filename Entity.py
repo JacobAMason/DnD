@@ -19,11 +19,9 @@ class Entity:
     def set_position(self, vector, mobbounds=None):
         if self._position + vector in self._parentZone:
             if mobbounds is None:
-                logger.debug("%s has no mobbounds and is inside %s.", self, self._parentZone)
                 self._position += vector
                 self.update_zone()
             elif self._position + vector in mobbounds:
-                logger.debug("%s is inside mobbounds %s.", self, mobbounds)
                 self._position += vector
                 self.update_zone()
             return True
