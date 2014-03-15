@@ -17,7 +17,6 @@ class Entity:
         return self._position
     
     def set_position(self, vector, mobbounds=None):
-        logger.debug("%s trying to move with vector %s.", self, vector)
         if self._position + vector in self._parentZone:
             if mobbounds is None:
                 logger.debug("%s has no mobbounds and is inside %s.", self, self._parentZone)

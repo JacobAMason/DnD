@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG,
                     )
 
 console = logging.StreamHandler()
-console.setLevel(logging.DEBUG)
+console.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s  %(name)-7s %(levelname)-8s %(message)s", datefmt="%I:%M:%S %p")
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
@@ -24,7 +24,7 @@ def clear():
 
 clear()
 
-HOST = "localhost"
+HOST = "25.122.108.67"
 PORT = 65053
 
 logger.debug('creating socket')

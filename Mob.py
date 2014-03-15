@@ -87,8 +87,7 @@ class Mob(Entity):
             while i > 0 and (self._isFollowing[i-1].get_position() - self.get_position()) > (self._isFollowing[i].get_position() - self.get_position()):
                 self._isFollowing[i], self._isFollowing[i-1] = self._isFollowing[i-1], self._isFollowing[i]
                 i -=1
-
-
+        logger.debug("%s is tracking %s", self, other)
 
     def can_see(self, other):
         """
@@ -104,7 +103,7 @@ class Mob(Entity):
             return True
         else:
             if self._willFollow and other in self._wasFollowing:
-                self.stop_follow(other)
+                self._isFollowing.remove(other)
             return False
 
 

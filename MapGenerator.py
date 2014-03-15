@@ -45,7 +45,6 @@ class MapGenerator:
         When any Player moves or after every 10 seconds, this function will loop over all the Player entities.
         It will check to see which player/mobs see who and then send map data to the corresponding players.
         """
-        logger.debug("Refreshing view.")
         for p in pInstances:
             p.request.send(BE.MAP + bytes("BEGIN", "utf-8"))
             for other in pInstances:
