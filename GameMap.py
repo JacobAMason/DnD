@@ -35,7 +35,7 @@ class PlayerMap(Thread):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return
+                    pass
             coords = '%s,%s' %(self._ipos,self._jpos)
             text = TheFont.render(coords,True,white,black)
 
