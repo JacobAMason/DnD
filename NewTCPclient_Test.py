@@ -95,34 +95,33 @@ class Message(Thread):
                         """
                         The stream of mob and other player data is about to begin.
                         """
+                        MyMap.character_init()
                         logger.debug("Starting Map Stream")
-                        MyMap.character_init():
+
                     elif data[0] == "P":
                         """
                         This is the representation of another player.
                         """
                         data = [int(axis) for axis in data[1:].split(",")]
+                        MyMap.players_update(data)
                         logger.debug('Received other player position: "%s"', data)
                         print("You see a player at", data)
-
-                        # DUMMY_mapModule.otherPlayerPosition(data)
 
                     elif data[0] == "M":
                         """
                         This is the representation of a Mob.
                         """
                         data = [int(axis) for axis in data[1:].split(",")]
+                        MyMap.mob_update(data)
                         logger.debug('Received mob position: "%s"', data)
                         print("You see a mob at", data)
-
-                        MyMap.mob_update(data)
-
+                        
                     elif data == "END":
                         """
                         The stream of mob and other player data is complete.
                         """
                         logger.debug("Map Stream Over")
-                        # DUMMY function here
+                        # don't really need to call anything here
 
     
 # Send a connect message

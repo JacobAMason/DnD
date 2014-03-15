@@ -7,7 +7,7 @@ class PlayerMap(Thread):
     def __init__(self, player_position):
         super().__init__()
         self._player_position = player_position
-        self._key = 32
+        self._key = 64
         self._visibility = 9
         self._size = self._visibility * self._key + 1
         self._area = self._size, self._size
@@ -49,12 +49,15 @@ class PlayerMap(Thread):
         self._players = []
         self._mobs = []
 
+    def players_update(self, position):
+        self._player_i = self._visibility//2 + (int(position[0]) - self._ipos)
+        self._player_j = self._visibility//2 + (int(position[1]) - self._jpos)
+        self._players.append((self._player_i, self._player_j))
+
     def mob_update(self, position):
-        self.temp_i = int(position[0])
-        self.temp_j = int(position[1])
-        self._mob_i = self._visibility//2 + (self.temp_i - self._ipos)
-        self._mob_j = self._visibility//2 + (self.temp_j - self._jpos)
-        self._mobs.append((self._mob_i,self._mob_j))
+        self._mob_i = self._visibility//2 + (int(position[0]) - self._ipos)
+        self._mob_j = self._visibility//2 + (int(position[1]) - self._jpos)
+        self._mobs.append((self._mob_i, self._mob_j))
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]
