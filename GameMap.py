@@ -52,7 +52,7 @@ class PlayerMap(Thread):
     def players_update(self, position):
         self._player_i = self._visibility//2 + (int(position[0]) - self._ipos)
         self._player_j = self._visibility//2 + (int(position[1]) - self._jpos)
-        self._players.append((self._player_i, self._player_j))
+        self._players.append((self._player_i * self._key, self._player_j * self._key))
 
     def mob_update(self, position):
         self._mob_i = self._visibility//2 + (int(position[0]) - self._ipos)
