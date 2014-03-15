@@ -41,23 +41,30 @@ class PlayerMap(Thread):
             screen.blit(self.player,(self._visibility//2 * self._key, self._visibility//2 * self._key))
             pygame.display.update()
 
-    def update(self, position):
-        self._ipos = int(position[0])
-        self._jpos = int(position[1])
+    def update(self):
+        self._ipos, self._jpos = self._new_ipos, self._new_jpos
+        self._players = self._new_players
+        self._mobs = self._new_mobs
 
     def character_init(self):
         self._players = []
         self._mobs = []
+        self._new_players - []
+        self._new_mobs = []
+
+    def client_update(self, postion):
+        self._new_ipos = int(position[0])
+        self._new_jpos = int(position[1])
 
     def players_update(self, position):
         self._player_i = self._visibility//2 + (int(position[0]) - self._ipos)
         self._player_j = self._visibility//2 + (int(position[1]) - self._jpos)
-        self._players.append((self._player_i * self._key, self._player_j * self._key))
+        self._new_players.append((self._player_i * self._key, self._player_j * self._key))
 
     def mob_update(self, position):
         self._mob_i = self._visibility//2 + (int(position[0]) - self._ipos)
         self._mob_j = self._visibility//2 + (int(position[1]) - self._jpos)
-        self._mobs.append((self._mob_i * self._key, self._mob_j * self._key))
+        self._new_mobs.append((self._mob_i * self._key, self._mob_j * self._key))
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]

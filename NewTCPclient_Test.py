@@ -87,7 +87,7 @@ class Message(Thread):
                         This is the representation of this client's player.
                         """
                         data = [int(axis) for axis in data[1:].split(",")]
-                        MyMap.update(data)
+                        MyMap.client_update(data)
                         logger.debug('Received self position: "%s"', data)
                         print("You are now at", data)
 
@@ -120,6 +120,7 @@ class Message(Thread):
                         """
                         The stream of mob and other player data is complete.
                         """
+                        MyMap.update()
                         logger.debug("Map Stream Over")
                         # don't really need to call anything here
 
