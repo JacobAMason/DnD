@@ -8,7 +8,7 @@ import XMLparse
 
 class Player(Entity):
     instances = []
-    def __init__(self, name, visibility=3, position=Position([0,0,0]), parentZone=World, password=None):
+    def __init__(self, name, visibility=4, position=Position([0,0,0]), parentZone=World, password=None):
         super().__init__(name, visibility, position, parentZone)
         self._password = password
         Player.instances.append(self)
