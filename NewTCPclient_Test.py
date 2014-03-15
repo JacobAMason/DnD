@@ -120,7 +120,6 @@ class Message(Thread):
                         """
                         The stream of mob and other player data is complete.
                         """
-                        MyMap.update()
                         logger.debug("Map Stream Over")
                         # don't really need to call anything here
 
