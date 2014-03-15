@@ -38,7 +38,7 @@ class PlayerMap(Thread):
                 screen.blit(self.other,(person))
             for baddie in self._mobs:
                 screen.blit(self.mob,(baddie))
-            screen.blit(self.player, (self._visibility//2*self._key, self._visibility//2*self._key))
+            screen.blit(self.player,(self._visibility//2 * self._key, self._visibility//2 * self._key))
             pygame.display.update()
 
     def update(self, position):
@@ -57,7 +57,7 @@ class PlayerMap(Thread):
     def mob_update(self, position):
         self._mob_i = self._visibility//2 + (int(position[0]) - self._ipos)
         self._mob_j = self._visibility//2 + (int(position[1]) - self._jpos)
-        self._mobs.append((self._mob_i, self._mob_j))
+        self._mobs.append((self._mob_i * self._key, self._mob_j * self._key))
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]
