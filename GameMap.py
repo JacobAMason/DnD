@@ -52,7 +52,7 @@ class PlayerMap(Thread):
         self._new_players - []
         self._new_mobs = []
 
-    def client_update(self, postion):
+    def client_update(self, position):
         self._new_ipos = int(position[0])
         self._new_jpos = int(position[1])
 
