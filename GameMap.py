@@ -41,10 +41,11 @@ class PlayerMap(Thread):
 
             screen.fill(black)
             screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2) * self._key + self._key))
-            for person in self._players:
-                screen.blit(self.other,(person))
+            
             for baddie in self._mobs:
                 screen.blit(self.mob,(baddie))
+            for person in self._players:
+                screen.blit(self.other,(person))
             screen.blit(self.player,(self._visibility//2 * self._key, self._visibility//2 * self._key + self._key))
             pygame.draw.rect(screen,black,(0,0,self._size,self._key))
             screen.blit(text,(0,0))
