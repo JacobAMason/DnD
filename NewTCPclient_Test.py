@@ -24,7 +24,7 @@ def clear():
 
 clear()
 
-HOST = "25.122.108.67"
+HOST = "localhost"
 PORT = 65053
 
 logger.debug('creating socket')
@@ -120,6 +120,7 @@ class Message(Thread):
                         """
                         The stream of mob and other player data is complete.
                         """
+                        MyMap.map_update()
                         logger.debug("Map Stream Over")
                         # don't really need to call anything here
 

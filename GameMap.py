@@ -9,13 +9,15 @@ class PlayerMap(Thread):
         self._player_position = player_position
         self._key = 64
         self._visibility = 9
-        self._size = self._visibility * self._key + 1
-        self._area = self._size, self._size
+        self._size = self._visibility * self._key
+        self._area = self._size, self._size + self._key
         self._ipos = self._player_position[0]
         self._jpos = self._player_position[1]
         self._kpos = self._player_position[2]
         self._players = []
         self._mobs = []
+        self._draw = True
+
 
     def run(self):
         pygame.init()
@@ -33,28 +35,30 @@ class PlayerMap(Thread):
 
         while True:
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pass
-            coords = '%s,%s' %(self._ipos,self._jpos)
-            text = TheFont.render(coords,True,white,black)
+            if self._draw:   
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pass
+                coords = '%s,%s' %(self._ipos,self._jpos)
+                text = TheFont.render(coords,True,white,black)
 
-            screen.fill(black)
-            screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2) * self._key + self._key))
-            
-            for baddie in self._mobs:
-                screen.blit(self.mob,(baddie))
-            for person in self._players:
-                screen.blit(self.other,(person))
-            screen.blit(self.player,(self._visibility//2 * self._key, self._visibility//2 * self._key + self._key))
-            pygame.draw.rect(screen,black,(0,0,self._size,self._key))
-            screen.blit(text,(0,0))
-            pygame.display.update()
+                screen.fill(black)
+                screen.blit(self.base, (-(self._ipos-self._visibility//2)*self._key, -(self._jpos-self._visibility//2) * self._key + self._key))
+                
+                for baddie in self._mobs:
+                    screen.blit(self.mob,(baddie))
+                for person in self._players:
+                    screen.blit(self.other,(person))
+                screen.blit(self.player,(self._visibility//2 * self._key, self._visibility//2 * self._key + self._key))
+                pygame.draw.rect(screen,black,(0,0,self._size,self._key))
+                screen.blit(text,(0,0))
+                pygame.display.update()
 
 
     def character_init(self):
         self._players = []
         self._mobs = []
+        self._draw = False
 
     def client_update(self, position):
         self._ipos = int(position[0])
@@ -69,6 +73,9 @@ class PlayerMap(Thread):
         self._mob_i = self._visibility//2 + (int(position[0]) - self._ipos)
         self._mob_j = self._visibility//2 + (int(position[1]) - self._jpos)
         self._mobs.append((self._mob_i * self._key, self._mob_j * self._key + self._key))
+
+    def map_update(self):
+        self._draw = True
 
 if __name__ == '__main__':
     player_position = [1, 3, 0]

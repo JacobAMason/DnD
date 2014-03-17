@@ -36,6 +36,7 @@ class MapGenerator:
         Players usually call this upon updating their positions.
         """
         logger.debug("Sending %s MAP data.", player)
+        player.request.send(BE.MAP + bytes("BEGIN", "utf-8"))
         player.request.send(BE.MAP + bytes("S" + str(player.get_position())[1:-1], "utf-8"))  # 1 to -1 removes the "[" characters
         self.refresh_view(pInstances)
 
