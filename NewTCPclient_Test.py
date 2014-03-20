@@ -24,7 +24,7 @@ def clear():
 
 clear()
 
-HOST = "localhost"
+HOST = "25.122.108.67"
 PORT = 65053
 
 logger.debug('creating socket')

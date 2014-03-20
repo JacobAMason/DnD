@@ -1,5 +1,5 @@
 
-import pygame
+import pygame, os
 from threading import Thread
 
 
@@ -24,12 +24,13 @@ class PlayerMap(Thread):
     def run(self):
         pygame.init()
 
+        folder = 'resources'
         screen = pygame.display.set_mode(self._area)
         pygame.display.set_caption('Game Map')
-        self.base = pygame.image.load('15x15map.png')
-        self.player = pygame.image.load('playstation.png')
-        self.other = pygame.image.load('droid.png')
-        self.mob = pygame.image.load('creeperm2.png')
+        self.base = pygame.image.load(os.path.join(folder,'15x15map.png'))
+        self.player = pygame.image.load(os.path.join(folder,'playstation.png'))
+        self.other = pygame.image.load(os.path.join(folder,'droid.png'))
+        self.mob = pygame.image.load(os.path.join(folder,'creeperm2.png'))
         TheFont = pygame.font.SysFont(None, 64)
         self.movement_commands = {pygame.K_LEFT:'west',
                                   pygame.K_a:'west',
