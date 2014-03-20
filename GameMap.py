@@ -4,16 +4,13 @@ from threading import Thread
 
 
 class PlayerMap(Thread):
-    def __init__(self, player_position):
+    def __init__(self):
         super().__init__()
         self._player_position = player_position
         self._key = 64
         self._visibility = 9
         self._size = self._visibility * self._key
         self._area = self._size, self._size + self._key
-        self._ipos = self._player_position[0]
-        self._jpos = self._player_position[1]
-        self._kpos = self._player_position[2]
         self._players = []
         self._mobs = []
         self._draw = True
@@ -32,12 +29,15 @@ class PlayerMap(Thread):
         self.other = pygame.image.load(os.path.join(folder,'droid.png'))
         self.mob = pygame.image.load(os.path.join(folder,'creeperm2.png'))
         TheFont = pygame.font.SysFont(None, 64)
-        self.movement_commands = {pygame.K_LEFT:'west',
+        self.movement_commands = {pygame.K_UP:'north',
+                                  pygame.K_w:'north',
+                                  pygame.K_DOWN:'south'
+                                  pygame.K_s:'south'
+                                  pygame.K_LEFT:'west',
                                   pygame.K_a:'west',
                                   pygame.K_RIGHT:'east',
-                                  pygame.K_d:'east'
-
-        }
+                                  pygame.K_d:'east',
+                                  }
 
 
         black = 0, 0, 0
