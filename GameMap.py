@@ -17,6 +17,8 @@ class PlayerMap(Thread):
         self._players = []
         self._mobs = []
         self._draw = True
+        self._message = ""
+        
 
 
     def run(self):
@@ -29,6 +31,13 @@ class PlayerMap(Thread):
         self.other = pygame.image.load('droid.png')
         self.mob = pygame.image.load('creeperm2.png')
         TheFont = pygame.font.SysFont(None, 64)
+        self.movement_commands = {pygame.K_LEFT:'west',
+                                  pygame.K_a:'west',
+                                  pygame.K_RIGHT:'east',
+                                  pygame.K_d:'east'
+
+        }
+
 
         black = 0, 0, 0
         white = 255, 255, 255
@@ -39,7 +48,13 @@ class PlayerMap(Thread):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pass
-                coords = '%s,%s' %(self._ipos,self._jpos)
+                    if event.type == pygame.KEYDOWN:
+                        if event.key in self.movement_commands:
+                            self._message = ',  you moved ' + self.movement_commands[event.key]
+                        else:
+                            self._message = ""
+
+                coords = '%s,%s%s' %(self._ipos, self._jpos, self._message)
                 text = TheFont.render(coords,True,white,black)
 
                 screen.fill(black)
